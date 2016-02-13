@@ -1,32 +1,72 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Rango</title>
-    </head>
+<head>
+    <title>Rango</title>
+    <!--http://www.w3schools.com/css/css_form.asp -->
+    <style>
+        input {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
 
-    <body>
-        <h1>Register with Rango</h1>
+        input[type=submit] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-        {% if registered %}
-            Rango says: <strong>thank you for registering!</strong>
-            <a href="{% url 'index' %}">Return to the homepage.</a><br />
-        {% else %}
-            Rango says: <strong>register here!</strong><br />
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
 
-            <form id="user_form" method="post" action="{% url 'register' %}"
-                enctype="multipart/form-data">
+        #form1 {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 40px;
+        }
+    </style>
 
-                {% csrf_token %}
+</head>
 
-                <!-- Display each form. The as_p method wraps each element in a paragraph
-                (<p>) element. This ensures each element appears on a new line,
-                making everything look neater. -->
-                {{ user_form.as_p }}
-                {{ user_profileForm.as_p }}
+<body>
+<h1>Register with Rango</h1>
 
-                <!-- Provide a button to click to submit the form. -->
-                <input type="submit" name="submit" value="Register" />
-            </form>
-        {% endif %}
-    </body>
+{% if registered %}
+    Rango says: <strong>thank you for registering!</strong>
+    <a href="{% url 'index' %}">Return to the homepage.</a><br/>
+{% else %}
+    Rango says: <strong>register here!</strong><br/>
+    <div id="form1">
+        <form id="user_form" method="post" action="{% url 'register' %}"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {% for field in user_form %}
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+
+            {% endfor %}
+
+            {% for field in profile_form %}
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+            {% endfor %}
+
+            <!-- Provide a button to click to submit the form. -->
+            <input id="submit" type="submit" name="submit" value="Register"/>
+        </form>
+    </div>
+{% endif %}
+</body>
 </html>

@@ -36,8 +36,8 @@ def user_login(request):
                 return HttpResponse("Your Rango account is disabled.")
         else:
             # Bad login details were provided. So we can't log the user in.
-            print "Invalid login details: {0}, {1}".format(username, password)
-            return HttpResponse("Invalid login details supplied.")
+           print "Invalid login details: {0}, {1}".format(username, password)
+           return HttpResponse("Invalid login details supplied.")
 
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
@@ -57,10 +57,10 @@ def register(request):
         # Attempt to grab information from the raw form information.
         # Note that we make use of both UserForm and UserProfileForm.
         user_form = UserForm(data=request.POST)
-        user_profileForm = UserProfileForm(data=request.POST)
+        profile_form = UserProfileForm(data=request.POST)
 
         # If the two forms are valid...
-        if user_form.is_valid() and user_profileForm.is_valid():
+        if user_form.is_valid() and profile_form.is_valid():
             # Save the user's form data to the database.
             user = user_form.save()
 
@@ -72,7 +72,7 @@ def register(request):
             # Now sort out the UserProfile instance.
             # Since we need to set the user attribute ourselves, we set commit=False.
             # This delays saving the model until we're ready to avoid integrity problems.
-            profile = user_profileForm.save(commit=False)
+            profile = profile_form.save(commit=False)
             profile.user = user
 
             # Did the user provide a profile picture?
@@ -90,18 +90,18 @@ def register(request):
         # Print problems to the terminal.
         # They'll also be shown to the user.
         else:
-            print user_form.errors, user_profileForm.errors
+            print user_form.errors, profile_form.errors
 
     # Not a HTTP POST, so we render our form using two ModelForm instances.
     # These forms will be blank, ready for user input.
     else:
         user_form = UserForm()
-        user_profileForm = UserProfileForm()
+        profile_form = UserProfileForm()
 
     # Render the template depending on the context.
     return render(request,
                   'uta_auth/register.html',
-                  {'user_form': user_form, 'user_profileForm': user_profileForm, 'registered': registered})
+                  {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
 
 # Use the login_required() decorator to ensure only those logged in can access the view.
 @login_required

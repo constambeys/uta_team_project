@@ -6,12 +6,10 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     return HttpResponseRedirect(reverse('login'))
 
-
+@login_required
 def home(request):
 
-    #if not request.user.is_authenticated():
-    # return HttpResponse("You are logged in.")
-
+    #if request.user.is_authenticated():
     # Construct a dictionary to pass to the template engine as its context.
     # Note the key boldmessage is the same as {{ boldmessage }} in the template!
     context_dict = {'boldmessage': "I am bold font from the context"}
@@ -22,5 +20,6 @@ def home(request):
 
     return render(request, 'index.html', context_dict)
 
-    #else:
-    # return HttpResponse("You are not logged in.")
+@login_required
+def restricted(request):
+    return HttpResponse("Since you're logged in, you can see this text!")

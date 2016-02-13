@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
     url(r'^home$', views.home, name='home'),
     url(r'^auth/', include('uta_auth.urls')),  # ADD THIS NEW TUPLE!
+    url(r'^restricted/', views.restricted, name='restricted'),
 )
