@@ -1,8 +1,8 @@
 from django.http import *
 from django.contrib.auth import *
+from uta_auth.forms import *
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
-from uta_auth.forms import UserForm, UserProfileForm
 from django.contrib.auth.decorators import login_required
 
 def user_login(request):
@@ -48,6 +48,21 @@ def user_login(request):
 
 def register(request):
 
+    # If the request is a HTTP POST, try to pull out the relevant information.
+    if request.method == 'POST':
+
+        user_type = request.POST.get('user_type')
+
+        return HttpResponseRedirect(reverse('register_user',args=[user_type]))
+    # The request is not a HTTP POST, so display the login form.
+    # This scenario would most likely be a HTTP GET.
+    else:
+        # No context variables to pass to the template system, hence the
+        # blank dictionary object...
+        return render(request, 'uta_auth/register.html', {})
+
+def register_user(request, user_type):
+
     # A boolean value for telling the template whether the registration was successful.
     # Set to False initially. Code changes value to True when registration succeeds.
     registered = False
@@ -57,7 +72,10 @@ def register(request):
         # Attempt to grab information from the raw form information.
         # Note that we make use of both UserForm and UserProfileForm.
         user_form = UserForm(data=request.POST)
-        profile_form = UserProfileForm(data=request.POST)
+        if user_type == "student":
+            profile_form = Student(data=request.POST)
+        else:
+            profile_form = Instructor(data=request.POST)
 
         # If the two forms are valid...
         if user_form.is_valid() and profile_form.is_valid():
@@ -96,12 +114,22 @@ def register(request):
     # These forms will be blank, ready for user input.
     else:
         user_form = UserForm()
-        profile_form = UserProfileForm()
+        if user_type == "student":
+            profile_form = Student()
+        else:
+            profile_form = Instructor()
+
+    # Create a context dictionary which we can pass to the template rendering engine.
+    context_dict = {}
+
+     # Adds our results list to the template context under name pages.
+    context_dict['user_form'] = user_form
+    context_dict['profile_form'] = profile_form
+    context_dict['user_type'] = user_type
+    context_dict['registered'] = registered
 
     # Render the template depending on the context.
-    return render(request,
-                  'uta_auth/register.html',
-                  {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
+    return render(request,'uta_auth/register_user.html',context_dict)
 
 # Use the login_required() decorator to ensure only those logged in can access the view.
 @login_required

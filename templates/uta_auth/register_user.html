@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rango</title>
+    <!--http://www.w3schools.com/css/css_form.asp -->
+    <style>
+        input {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type=submit] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+
+        #form1 {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 40px;
+        }
+    </style>
+
+</head>
+
+<body>
+<h1>Register with Rango</h1>
+
+{% if registered %}
+    Rango says: <strong>thank you for registering!</strong>
+    <a href="{% url 'index' %}">Return to the homepage.</a><br/>
+{% else %}
+    Rango says: <strong>register here!</strong><br/>
+    <div id="form1">
+        <form id="user_form" method="post" action="{% url 'register_user' user_type %}"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {% for field in user_form %}
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+
+            {% endfor %}
+
+            {% for field in profile_form %}
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+            {% endfor %}
+
+            <!-- Provide a button to click to submit the form. -->
+            <input id="submit" type="submit" name="submit" value="Register"/>
+        </form>
+    </div>
+{% endif %}
+</body>
+</html>

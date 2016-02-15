@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Rango</title>
     <!--http://www.w3schools.com/css/css_form.asp -->
     <style>
         input {
-            width: 100%;
             padding: 12px 20px;
             margin: 8px 0;
             display: inline-block;
@@ -15,7 +15,6 @@
         }
 
         input[type=submit] {
-            width: 100%;
             background-color: #4CAF50;
             color: white;
             padding: 14px 20px;
@@ -30,43 +29,26 @@
         }
 
         #form1 {
+            margin: auto;
+            text-align: center;
+            width: 20%;
             border-radius: 5px;
             background-color: #f2f2f2;
             padding: 40px;
         }
+
     </style>
 
 </head>
-
 <body>
-<h1>Register with Rango</h1>
-
-{% if registered %}
-    Rango says: <strong>thank you for registering!</strong>
-    <a href="{% url 'index' %}">Return to the homepage.</a><br/>
-{% else %}
-    Rango says: <strong>register here!</strong><br/>
     <div id="form1">
-        <form id="user_form" method="post" action="{% url 'register' %}"
-              enctype="multipart/form-data">
+         <form id="type_form" method="post" action="{% url 'register' %}">
+                    {% csrf_token %}
+              <input type="radio" name="user_type" value="student" checked> Student<br>
+              <input type="radio" name="user_type" value="instructor"> Instructor<br>
 
-            {% csrf_token %}
-
-            {% for field in user_form %}
-                {{ field.errors }}
-                {{ field.label_tag }} {{ field }}
-
-            {% endfor %}
-
-            {% for field in profile_form %}
-                {{ field.errors }}
-                {{ field.label_tag }} {{ field }}
-            {% endfor %}
-
-            <!-- Provide a button to click to submit the form. -->
-            <input id="submit" type="submit" name="submit" value="Register"/>
-        </form>
-    </div>
-{% endif %}
+              <input type="submit" value="next" />
+         </form>
+     </div>
 </body>
 </html>

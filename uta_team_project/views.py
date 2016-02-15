@@ -10,16 +10,21 @@ def index(request):
 @login_required
 def home(request):
     if request.user.is_authenticated():
+
+        context_dict = {}
+
         # Construct a dictionary to pass to the template engine as its context.
         # Note the key boldmessage is the same as {{ boldmessage }} in the template!
         user = request.user
-        if hasattr(request.user, 'userprofile'):
-            profile = request.user.userprofile
+        if hasattr(request.user, 'student'):
+            profile = request.user.student
+            context_dict['boldmessage'] = "Hello  " + user.first_name + " " + user.last_name  + " " + profile.name
+        elif hasattr(request.user, 'instructor'):
+            profile = request.user.instructor
+            context_dict['boldmessage'] = "Hello  " + user.first_name + " " + user.last_name  + " " + profile.department
         else:
             logout(request) #Clear store session
             return HttpResponse("Oops something went wrong!!")
-
-        context_dict = {'boldmessage': "Hello  " + user.first_name + " " + user.last_name  + " " + profile.name}
 
         # Return a rendered response to send to the client.
         # We make use of the shortcut function to make our lives easier.

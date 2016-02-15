@@ -1,6 +1,7 @@
 from django.contrib import admin
-from uta_auth.models import UserProfile
+from uta_auth.models import *
 
 # Register your models here.
 
-admin.site.register(UserProfile)
+admin.site.register(Student)
+admin.site.register(Instructor)
