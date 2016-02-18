@@ -24,3 +24,14 @@ class Instructor(models.Model):
     # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
         return self.user.username
+
+class Assignment(models.Model):
+    instructor = models.ForeignKey(Instructor)
+    students = models.ManyToManyField(Student)
+
+    # The additional attributes we wish to include.
+    name = models.CharField(max_length=100)
+
+    # Override the __unicode__() method to return out something meaningful!
+    def __unicode__(self):
+        return self.name
