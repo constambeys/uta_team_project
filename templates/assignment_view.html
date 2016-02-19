@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rango</title>
+</head>
+
+<body>
+<h1>Username: {{ username }}</h1>
+<h1>Rango says...hello world!</h1>
+
+{% if groups %}
+    <ul>
+        {% for group in groups %}
+                <h3>{{ group.name }}</h3>
+                {% for student in group.students.all %}
+                         <li>{{ student.user.first_name }}  {{ student.user.last_name }}</li>
+                {% endfor %}
+        {% endfor %}
+    </ul>
+{% else %}
+    <strong>There are no groups present.</strong>
+{% endif %}
+
+{% if no_group %}
+    <ul>
+        {% for student in no_group %}
+                <li>{{ student.user.first_name }}  {{ student.user.last_name }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <strong>There are no student without group.</strong>
+{% endif %}
+
+<a href="/rango/about/">About</a>
+</body>
+</html

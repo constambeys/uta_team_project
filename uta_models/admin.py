@@ -6,3 +6,4 @@ from uta_models.models import *
 admin.site.register(Student)
 admin.site.register(Instructor)
 admin.site.register(Assignment)
+admin.site.register(Group)
