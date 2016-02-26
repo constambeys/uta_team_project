@@ -2,47 +2,83 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
-class Student(models.Model):
-    # This line is required. Links UserProfile to a User model instance.
-    user = models.OneToOneField(User)
 
-    # The additional attributes we wish to include.
-    name = models.CharField(max_length=100)
+# e.g Computing Science, Data Science
+class Department(models.Model):
+    name = models.CharField(max_length=100, unique=True)
 
-    # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
-        return self.user.username
+        return "Department: " + self.name
+
+
+# e.g MSc, 4th year
+class LevelOfStudy(models.Model):
+    lvl = models.CharField(max_length=100, unique=True)
+
+    def __unicode__(self):
+        return "Level Of Study: " + self.lvl
+
+
+# e.g Internet Technology, Cyber Security
+class Course(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __unicode__(self):
+        return "Course: " + self.name
+
+
+class Qualification(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Requirement(models.Model):
+    min_group_size = models.IntegerField(default=1)
+    max_group_size = models.IntegerField(default=2)
+    qualifications = models.ManyToManyField(Qualification)
+
+    def __unicode__(self):
+        return "Requirement: min group size " + str(self.min_group_size) + ", max group size " + str(self.max_group_size)
+        + ", " + self.qualifications
 
 
 class Instructor(models.Model):
-    # This line is required. Links UserProfile to a User model instance.
     user = models.OneToOneField(User)
 
-    # The additional attributes we wish to include.
-    department = models.CharField(max_length=100)
-
-    # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
-        return self.user.username
+        return "Instructor: " + self.user.username
+
 
 class Assignment(models.Model):
+    name = models.CharField(max_length=100, unique=True, default="Assignment")
     instructor = models.ForeignKey(Instructor)
-    students = models.ManyToManyField(Student)
+    course = models.ForeignKey(Course)
+    requirements = models.ForeignKey(Requirement)
 
-    # The additional attributes we wish to include.
-    name = models.CharField(max_length=100)
-
-    # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
-        return self.name
+        return "Assignment: " + self.name
+
+
+class Student(models.Model):
+    user = models.OneToOneField(User)
+    matriculationNumber = models.IntegerField(unique=True)
+    department = models.ForeignKey(Department)
+    lvlOfStudy = models.ForeignKey(LevelOfStudy)
+    qualifications = models.ManyToManyField(Qualification)
+    students = models.ManyToManyField(Assignment)
+
+    def __unicode__(self):
+        return "Student: " + self.user.username
+
 
 class Group(models.Model):
+    name = models.CharField(max_length=100, default="Group")
     assignment = models.ForeignKey(Assignment)
     students = models.ManyToManyField(Student)
 
-    # The additional attributes we wish to include.
-    name = models.CharField(max_length=100)
-
-    # Override the __unicode__() method to return out something meaningful!
     def __unicode__(self):
-        return self.name
+        return "Group: " + self.name
+
+

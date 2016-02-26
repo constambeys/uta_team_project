@@ -22,7 +22,7 @@ def home(request):
             context_dict['boldmessage'] = "Hello  " + user.first_name + " " + user.last_name + " " + profile.name
         elif hasattr(request.user, 'instructor'):
             profile = request.user.instructor
-            context_dict['boldmessage'] = "Hello  " + user.first_name + " " + user.last_name + " " + profile.department
+            context_dict['boldmessage'] = "Hello  " + user.first_name + " " + user.last_name
         else:
             logout(request)  # Clear store session
             return HttpResponse("Oops something went wrong!!")  # Return a rendered response to send to the client.

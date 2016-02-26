@@ -13,10 +13,9 @@ class Student(forms.ModelForm):
 
     class Meta:
         model = Student
-        fields = ('name',)
+
 
 class Instructor(forms.ModelForm):
 
     class Meta:
         model = Instructor
-        fields = ('department',)
