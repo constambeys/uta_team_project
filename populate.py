@@ -57,8 +57,9 @@ def populate():
     create_instructor("rosa", "Rosanne", "English")
 
     r = create_requirement(1, 2, qualifications[0], qualifications[1])
-    a = create_assignment("Assessed Exercise", instructors[0], courses[0], r)
-    create_group("Team UTA", a, students[0], students[1], students[2], students[3])
+    a = create_assignment("Assessed Exercise", instructors[0], courses[0], r, students[0], students[1], students[2],
+                          students[3])
+    create_group("Team UTA", a, students[0], students[1])
 
     # PRINT DATA
     for x in departments:
@@ -106,6 +107,8 @@ def create_student(username, firstname, lastname, matriculation_number, departme
                                                  first_name=firstname,
                                                  last_name=lastname)
     if created:
+        user.set_password("1234")
+        user.save()
         student = Student(user=user)
         student.matriculationNumber = matriculation_number
         student.department = department
@@ -126,11 +129,18 @@ def create_qualification(name):
     Qualification.objects.get_or_create(name=name)
 
 
-def create_assignment(name, instructor, course, requirements):
-    return Assignment.objects.get_or_create(name=name,
-                                            instructor=instructor,
-                                            course=course,
-                                            requirements=requirements)[0]
+def create_assignment(name, instructor, course, requirements, *students):
+    (assignment, created) = Assignment.objects.get_or_create(name=name,
+                                                             instructor=instructor,
+                                                             course=course,
+                                                             requirements=requirements)
+    if created:
+        assignment.save()
+        for s in students:
+            assignment.students.add(s)
+        assignment.save()
+
+    return assignment
 
 
 def create_group(name, assignment, *students):

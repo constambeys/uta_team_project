@@ -23,6 +23,7 @@
 
 {% if no_group %}
     <ul>
+        <h3>No Group</h3>
         {% for student in no_group %}
                 <li>{{ student.user.first_name }}  {{ student.user.last_name }}</li>
         {% endfor %}

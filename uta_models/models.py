@@ -40,7 +40,8 @@ class Requirement(models.Model):
     qualifications = models.ManyToManyField(Qualification)
 
     def __unicode__(self):
-        return "Requirement: min group size " + str(self.min_group_size) + ", max group size " + str(self.max_group_size)
+        return "Requirement: min group size " + str(self.min_group_size) + ", max group size " + str(
+            self.max_group_size)
         + ", " + self.qualifications
 
 
@@ -50,27 +51,26 @@ class Instructor(models.Model):
     def __unicode__(self):
         return "Instructor: " + self.user.username
 
-
-class Assignment(models.Model):
-    name = models.CharField(max_length=100, unique=True, default="Assignment")
-    instructor = models.ForeignKey(Instructor)
-    course = models.ForeignKey(Course)
-    requirements = models.ForeignKey(Requirement)
-
-    def __unicode__(self):
-        return "Assignment: " + self.name
-
-
 class Student(models.Model):
     user = models.OneToOneField(User)
     matriculationNumber = models.IntegerField(unique=True)
     department = models.ForeignKey(Department)
     lvlOfStudy = models.ForeignKey(LevelOfStudy)
     qualifications = models.ManyToManyField(Qualification)
-    students = models.ManyToManyField(Assignment)
 
     def __unicode__(self):
         return "Student: " + self.user.username
+
+
+class Assignment(models.Model):
+    name = models.CharField(max_length=100, unique=True, default="Assignment")
+    instructor = models.ForeignKey(Instructor)
+    course = models.ForeignKey(Course)
+    requirements = models.ForeignKey(Requirement)
+    students = models.ManyToManyField(Student)
+
+    def __unicode__(self):
+        return "Assignment: " + self.name
 
 
 class Group(models.Model):
@@ -80,5 +80,3 @@ class Group(models.Model):
 
     def __unicode__(self):
         return "Group: " + self.name
-
-
