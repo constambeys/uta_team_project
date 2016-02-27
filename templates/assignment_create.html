@@ -44,7 +44,7 @@
 
 {% if registered %}
     Rango says: <strong>thank you for registering!</strong>
-    <a href="{% url 'index' %}">Return to the homepage.</a><br/>
+    <a href="{% url 'home' %}">Return to the homepage.</a><br/>
 {% else %}
     Rango says: <strong>register here!</strong><br/>
     <div id="form1">
@@ -59,6 +59,7 @@
 
             {% endfor %}
 
+            <input type="file" name="students" accept="*">
             <!-- Provide a button to click to submit the form. -->
             <input id="submit" type="submit" name="submit" value="Create"/>
         </form>

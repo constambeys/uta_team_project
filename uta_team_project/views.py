@@ -75,6 +75,16 @@ def assignment_create(request):
             # Save the user's form data to the database.
             assign = assign_form.save()
 
+            try:
+                file = request.FILES['students']
+                for line in file:
+                    id = line.rstrip('\r').rstrip('\n')
+                    s = Student.objects.get(matriculationNumber=id)
+                    assign.students.add(s)
+                assign.save()
+            except:
+                print "invalid student number found"
+
             # Update our variable to tell the template registration was successful.
             registered = True
 
