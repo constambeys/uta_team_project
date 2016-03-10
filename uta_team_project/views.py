@@ -45,7 +45,7 @@ def home(request):
             logout(request)  # Clear store session
             return HttpResponse("Oops something went wrong!!")  # Return a rendered response to send to the client.
 
-        return render(request, 'index.html', context_dict)
+        return render(request, 'student_home.html', context_dict)
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
 

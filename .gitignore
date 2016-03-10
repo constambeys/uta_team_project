@@ -73,3 +73,6 @@ target/
 
 *.pyc
 
+#Mac hidden file
+.DS_Store
+
