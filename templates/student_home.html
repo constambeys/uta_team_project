@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block custom-style %}
-<!--<link rel="stylesheet" type="text/css" href="{% static 'styles/index.css' %}"/>-->
+<link rel="stylesheet" type="text/css" href="{% static 'styles/student_homepage.css' %}"/>
 {% endblock %}
 
 {% block title %} Student Homepage {% endblock %}
@@ -77,7 +77,7 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">Calendar</h3>
                 </div>
-                <div align="center" class="panel-body">
+                <div id="calendar_table" align="center" class="panel-body">
                    {{ calendar }}
                 </div>
             </div>
