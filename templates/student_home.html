@@ -62,7 +62,15 @@
                         <h3 class="panel-title">My Teams</h3>
                     </div>
                     <div class="panel-body">
-                        Panel content
+                        {% if groups %}
+                            <ul>
+                                {% for group in groups %}
+                                    <li>{{ group.name }}   </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <strong>There are no assignments present.</strong>
+                        {% endif %}
                     </div>
                 </div>
 

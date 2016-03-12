@@ -38,6 +38,7 @@ def home(request):
         if hasattr(request.user, 'student'):
             profile = request.user.student
             context_dict['student'] = profile
+            context_dict['groups'] = profile.group_set.all()
         elif hasattr(request.user, 'instructor'):
             profile = request.user.instructor
             context_dict['instructor'] = profile
