@@ -34,9 +34,9 @@ def register_user(request, user_type):
         # Note that we make use of both UserForm and UserProfileForm.
         user_form = UserForm(data=request.POST)
         if user_type == "student":
-            profile_form = Student(data=request.POST)
+            profile_form = StudentForm(data=request.POST)
         else:
-            profile_form = Instructor(data=request.POST)
+            profile_form = InstructorForm(data=request.POST)
 
         # If the two forms are valid...
         if user_form.is_valid() and profile_form.is_valid():
@@ -76,9 +76,9 @@ def register_user(request, user_type):
     else:
         user_form = UserForm()
         if user_type == "student":
-            profile_form = Student()
+            profile_form = StudentForm()
         else:
-            profile_form = Instructor()
+            profile_form = InstructorForm()
 
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}

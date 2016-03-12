@@ -8,3 +8,7 @@ class AssignmentForm(forms.ModelForm):
         model = Assignment
         fields = ('name', 'instructor', 'course', 'requirements')
 
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = ('name', 'students')

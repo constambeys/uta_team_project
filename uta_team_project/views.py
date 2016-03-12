@@ -25,9 +25,9 @@ def index(request):
                 login(request, user)
 
                 if hasattr(request.user, 'student'):
-                    return HttpResponseRedirect('student_home.html')
+                    return HttpResponseRedirect(reverse('student_home'))
                 else:
-                    return HttpResponseRedirect('instructor_home.html')
+                    return HttpResponseRedirect(reverse('instructor_home'))
             else:
 
                 return HttpResponse("Your Rango account is disabled.")
@@ -58,7 +58,7 @@ def student_home(request):
 
 
 @login_required
-def home(request):
+def instructor_home(request):
     if request.user.is_authenticated():
 
         # Construct a dictionary to pass to the template engine as its context.
@@ -77,7 +77,7 @@ def home(request):
             return HttpResponse("Oops something went wrong!!")  # Return a rendered response to send to the client.
 
         context_dict['assignments'] = profile.assignment_set.all()
-        return render(request, 'student_home.html', context_dict)
+        return render(request, 'instructor_home.html', context_dict)
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
 
@@ -155,19 +155,60 @@ def assignment_view(request, assignment_id):
         assignment = Assignment.objects.get(id=assignment_id)
         groups = assignment.group_set.all()
 
+        context_dict['assignment'] = assignment
         context_dict['groups'] = groups
         context_dict['no_group'] = getNoGroup(assignment)
         return render(request, 'assignment_view.html', context_dict)
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
 
+@login_required
+def group_create(request, assignment_id):
+    # A boolean value for telling the template whether the registration was successful.
+    # Set to False initially. Code changes value to True when registration succeeds.
+    registered = False
 
-def group_create(request):
-    if request.user.is_authenticated():
-        pass
-        # Working
+    # If it's a HTTP POST, we're interested in processing form data.
+    if request.method == 'POST':
+        # Attempt to grab information from the raw form information.
+        # Note that we make use of both UserForm and UserProfileForm.
+        group_form = GroupForm(data=request.POST)
+
+        # If the two forms are valid...
+        if group_form.is_valid():
+            assignment = Assignment.objects.get(id=assignment_id)
+            group = Group.objects.create(
+                name=group_form.cleaned_data['name'],
+                assignment=assignment,
+            )
+
+            group.students = group_form.cleaned_data['students']
+            group.save()
+
+            # Update our variable to tell the template registration was successful.
+            registered = True
+
+        # Invalid form or forms - mistakes or something else?
+        # Print problems to the terminal.
+        # They'll also be shown to the user.
+        else:
+            print group_form.errors
+
+    # Not a HTTP POST, so we render our form using two ModelForm instances.
+    # These forms will be blank, ready for user input.
     else:
-        return HttpResponse("Since you're logged in, you can see this text!")
+        group_form = GroupForm()
+
+    # Create a context dictionary which we can pass to the template rendering engine.
+    context_dict = {}
+
+    # Adds our results list to the template context under name pages.
+    context_dict['assignment_id'] = assignment_id
+    context_dict['group_form'] = group_form
+    context_dict['registered'] = registered
+
+    # Render the template depending on the context.
+    return render(request, 'group_create.html', context_dict)
 
 
 @login_required
