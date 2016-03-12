@@ -132,6 +132,14 @@ def assignment_view(request, assignment_id):
         return HttpResponse("Since you're logged in, you can see this text!")
 
 
+def group_create(request):
+    if request.user.is_authenticated():
+        pass
+        # Working
+    else:
+        return HttpResponse("Since you're logged in, you can see this text!")
+
+
 @login_required
 def restricted(request):
     return HttpResponse("Since you're logged in, you can see this text!")
