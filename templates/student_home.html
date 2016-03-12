@@ -42,8 +42,8 @@
                     {% if assignments %}
                     <ul>
                         {% for assignment in assignments %}
-                        <!-- Following line changed to add an HTML hyperlink -->
-                        <li>{{ assignment.course}} - {{ assignment.name }}</li>
+                        <li><a href="{% url 'assignment_view' assignment.id %}">{{ assignment.course }}
+                                        - {{ assignment.name }}</a></li>
                         {% endfor %}
                     </ul>
                     {% else %}
