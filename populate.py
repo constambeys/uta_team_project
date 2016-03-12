@@ -61,6 +61,10 @@ def populate():
                           students[3])
     create_group("Team UTA", a, students[0], students[1])
 
+    a = create_assignment("Project", instructors[0], courses[0], r, students[0], students[1], students[2],
+                          students[3])
+    create_group("Team UTA", a, students[0], students[1])
+
     # PRINT DATA
     for x in departments:
         print "{0}".format(str(x))

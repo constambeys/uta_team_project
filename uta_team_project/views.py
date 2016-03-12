@@ -61,22 +61,22 @@ def student_home(request):
 def instructor_home(request):
     if request.user.is_authenticated():
 
-        # Construct a dictionary to pass to the template engine as its context.
         context_dict = {}
         user = request.user
-        context_dict['user'] = user
-        if hasattr(request.user, 'student'):
-            profile = request.user.student
-            context_dict['student'] = profile
-            context_dict['groups'] = profile.group_set.all()
-        elif hasattr(request.user, 'instructor'):
-            profile = request.user.instructor
-            context_dict['instructor'] = profile
-        else:
-            logout(request)  # Clear store session
-            return HttpResponse("Oops something went wrong!!")  # Return a rendered response to send to the client.
 
+        profile = request.user.instructor
+        courses = []
+        for a in profile.assignment_set.all():
+            if a.course not in courses:
+                courses.append(a.course)
+
+        context_dict['username'] = user.username
+        context_dict['courses'] = courses
         context_dict['assignments'] = profile.assignment_set.all()
+
+        context_dict['calendar'] = mark_safe(HTMLCalendar(calendar.SUNDAY).formatmonth(date.today().year,
+                                                                                       date.today().month))
+
         return render(request, 'instructor_home.html', context_dict)
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
@@ -161,6 +161,7 @@ def assignment_view(request, assignment_id):
         return render(request, 'assignment_view.html', context_dict)
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
+
 
 @login_required
 def group_create(request, assignment_id):
