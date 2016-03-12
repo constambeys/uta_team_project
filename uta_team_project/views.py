@@ -6,6 +6,11 @@ from django.contrib.auth.decorators import login_required
 from uta_models.models import *
 from forms import *
 from uta_models.models import Student
+from django.shortcuts import render_to_response
+from django.utils.safestring import mark_safe
+from calendar import HTMLCalendar
+import calendar
+from datetime import date
 
 
 def index(request):
@@ -43,6 +48,9 @@ def student_home(request):
         context_dict['username'] = user.username
         context_dict['assignments'] = Assignment.objects.filter(students__user=user)
         context_dict['groups'] = Group.objects.filter(students__user=user)
+
+        context_dict['calendar'] = mark_safe(HTMLCalendar(calendar.SUNDAY).formatmonth(date.today().year,
+                                                                                       date.today().month))
 
         return render(request, 'student_home.html', context_dict)
     else:
