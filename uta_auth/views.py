@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 
+# deprecated
 def user_login(request):
 
     # If the request is a HTTP POST, try to pull out the relevant information.

@@ -40,7 +40,19 @@
                         <h3 class="panel-title">My Assignments</h3>
                     </div>
                     <div class="panel-body">
-                        Panel content
+                        {% if assignments %}
+                            <ul>
+                                {% for assignment in assignments %}
+                                    <li><a href="{% url 'assignment_view' assignment.id %}">{{ assignment.name }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <strong>There are no assignments present.</strong>
+                        {% endif %}
+                        {% if instructor %}
+                            <a href="{% url 'assignment_create' %}">Create</a>
+                        {% endif %}
                     </div>
                 </div>
             </div><!-- /.col-sm-4 -->
