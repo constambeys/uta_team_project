@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from uta_models.models import *
 from forms import *
+from uta_models.models import Student
 
 
 def index(request):
@@ -17,14 +18,35 @@ def index(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect(reverse('home'))
+
+                if hasattr(request.user, 'student'):
+                    return HttpResponseRedirect('student_home.html')
+                else:
+                    return HttpResponseRedirect('instructor_home.html')
             else:
-                return HttpResponse("Your account is disabled.")
+
+                return HttpResponse("Your Rango account is disabled.")
         else:
+
             print "Invalid login details: {0}, {1}".format(username, password)
             return HttpResponse("Invalid login details supplied.")
     else:
         return render(request, 'index.html', {})
+
+
+@login_required
+def student_home(request):
+    if request.user.is_authenticated():
+        context_dict = {}
+        user = request.user
+
+        context_dict['username'] = user.username
+        context_dict['assignments'] = Assignment.objects.filter(students__user=user)
+        context_dict['groups'] = Group.objects.filter(students__user=user)
+
+        return render(request, 'student_home.html', context_dict)
+    else:
+        return HttpResponse("Not logged in!")
 
 
 @login_required

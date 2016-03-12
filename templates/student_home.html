@@ -39,7 +39,16 @@
                     <h3 class="panel-title">My Assignments</h3>
                 </div>
                 <div class="panel-body">
-                    Panel content
+                    {% if assignments %}
+                    <ul>
+                        {% for assignment in assignments %}
+                        <!-- Following line changed to add an HTML hyperlink -->
+                        <li>{{ assignment.course}} - {{ assignment.name }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <strong>There are no assignments present.</strong>
+                    {% endif %}
                 </div>
             </div>
         </div><!-- /.col-sm-4 -->
@@ -49,7 +58,16 @@
                     <h3 class="panel-title">My Teams</h3>
                 </div>
                 <div class="panel-body">
-                    Panel content
+                    {% if groups %}
+                    <ul>
+                        {% for group in groups %}
+                        <!-- Following line changed to add an HTML hyperlink -->
+                        <li>{{ group.assignment.course}} - {{ group.name }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <strong>There are no groups present.</strong>
+                    {% endif %}
                 </div>
             </div>
 

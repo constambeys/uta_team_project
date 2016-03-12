@@ -4,16 +4,17 @@ from uta_auth.forms import *
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from uta_models.models import Student
+
 
 def user_login(request):
-
     # If the request is a HTTP POST, try to pull out the relevant information.
     if request.method == 'POST':
         # Gather the username and password provided by the user.
         # This information is obtained from the login form.
-                # We use request.POST.get('<variable>') as opposed to request.POST['<variable>'],
-                # because the request.POST.get('<variable>') returns None, if the value does not exist,
-                # while the request.POST['<variable>'] will raise key error exception
+        # We use request.POST.get('<variable>') as opposed to request.POST['<variable>'],
+        # because the request.POST.get('<variable>') returns None, if the value does not exist,
+        # while the request.POST['<variable>'] will raise key error exception
         username = request.POST.get('username')
         password = request.POST.get('password')
 
@@ -30,30 +31,38 @@ def user_login(request):
                 # If the account is valid and active, we can log the user in.
                 # We'll send the user back to the homepage.
                 login(request, user)
-                return HttpResponseRedirect(reverse('home'))
+
+                try:
+                    # If below command successful, then the logged in user is a Student
+                    Student.objects.get(user=user)
+                    return HttpResponseRedirect(reverse('student_home.html'))
+
+                except Student.DoesNotExist:
+                    # If this exception occurs, then the logged in user is an Instructor
+                    return HttpResponseRedirect(reverse('instructor_home.html'))
             else:
                 # An inactive account was used - no logging in!
                 return HttpResponse("Your Rango account is disabled.")
         else:
             # Bad login details were provided. So we can't log the user in.
-           print "Invalid login details: {0}, {1}".format(username, password)
-           return HttpResponse("Invalid login details supplied.")
+            print "Invalid login details: {0}, {1}".format(username, password)
+            return HttpResponse("Invalid login details supplied.")
 
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
     else:
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
-        return render(request, 'uta_auth/login.html', {})
+        return render(request, 'index.html', {})
+
 
 def register(request):
-
     # If the request is a HTTP POST, try to pull out the relevant information.
     if request.method == 'POST':
 
         user_type = request.POST.get('user_type')
 
-        return HttpResponseRedirect(reverse('register_user',args=[user_type]))
+        return HttpResponseRedirect(reverse('register_user', args=[user_type]))
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
     else:
@@ -61,8 +70,8 @@ def register(request):
         # blank dictionary object...
         return render(request, 'uta_auth/register.html', {})
 
-def register_user(request, user_type):
 
+def register_user(request, user_type):
     # A boolean value for telling the template whether the registration was successful.
     # Set to False initially. Code changes value to True when registration succeeds.
     registered = False
@@ -95,7 +104,7 @@ def register_user(request, user_type):
 
             # Did the user provide a profile picture?
             # If so, we need to get it from the input form and put it in the UserProfile model.
-            #if 'picture' in request.FILES:
+            # if 'picture' in request.FILES:
             #   profile.picture = request.FILES['picture']
 
             # Now we save the UserProfile model instance.
@@ -122,14 +131,15 @@ def register_user(request, user_type):
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
 
-     # Adds our results list to the template context under name pages.
+    # Adds our results list to the template context under name pages.
     context_dict['user_form'] = user_form
     context_dict['profile_form'] = profile_form
     context_dict['user_type'] = user_type
     context_dict['registered'] = registered
 
     # Render the template depending on the context.
-    return render(request,'uta_auth/register_user.html',context_dict)
+    return render(request, 'uta_auth/register_user.html', context_dict)
+
 
 # Use the login_required() decorator to ensure only those logged in can access the view.
 @login_required

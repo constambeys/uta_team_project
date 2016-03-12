@@ -51,6 +51,7 @@ class Instructor(models.Model):
     def __unicode__(self):
         return "Instructor: " + self.user.username
 
+
 class Student(models.Model):
     user = models.OneToOneField(User)
     matriculationNumber = models.IntegerField(unique=True)
