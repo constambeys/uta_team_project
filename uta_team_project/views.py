@@ -68,6 +68,7 @@ def home(request):
         if hasattr(request.user, 'student'):
             profile = request.user.student
             context_dict['student'] = profile
+            context_dict['groups'] = profile.group_set.all()
         elif hasattr(request.user, 'instructor'):
             profile = request.user.instructor
             context_dict['instructor'] = profile
@@ -157,6 +158,14 @@ def assignment_view(request, assignment_id):
         context_dict['groups'] = groups
         context_dict['no_group'] = getNoGroup(assignment)
         return render(request, 'assignment_view.html', context_dict)
+    else:
+        return HttpResponse("Since you're logged in, you can see this text!")
+
+
+def group_create(request):
+    if request.user.is_authenticated():
+        pass
+        # Working
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
 
