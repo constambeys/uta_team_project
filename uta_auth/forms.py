@@ -11,13 +11,13 @@ class UserForm(forms.ModelForm):
         fields = ('username', 'first_name', 'last_name', 'email', 'password')
 
 
-class Student(forms.ModelForm):
+class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = ('matriculationNumber', 'department', 'lvlOfStudy')
 
 
-class Instructor(forms.ModelForm):
+class InstructorForm(forms.ModelForm):
     class Meta:
         model = Instructor
         fields = ()

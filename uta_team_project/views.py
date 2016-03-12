@@ -25,9 +25,9 @@ def index(request):
                 login(request, user)
 
                 if hasattr(request.user, 'student'):
-                    return HttpResponseRedirect('student_home.html')
+                    return HttpResponseRedirect(reverse('student_home'))
                 else:
-                    return HttpResponseRedirect('instructor_home.html')
+                    return HttpResponseRedirect(reverse('instructor_home'))
             else:
 
                 return HttpResponse("Your Rango account is disabled.")
@@ -58,7 +58,7 @@ def student_home(request):
 
 
 @login_required
-def home(request):
+def instructor_home(request):
     if request.user.is_authenticated():
 
         # Construct a dictionary to pass to the template engine as its context.
