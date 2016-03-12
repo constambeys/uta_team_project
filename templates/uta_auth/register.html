@@ -1,54 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Rango</title>
-    <!--http://www.w3schools.com/css/css_form.asp -->
-    <style>
-        input {
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+{% extends 'base.html' %}
 
-        input[type=submit] {
-            background-color: #4CAF50;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+{% load static %}
 
-        input[type=submit]:hover {
-            background-color: #45a049;
-        }
+{% block custom-style %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/register.css' %}"/>
+{% endblock %}
 
-        #form1 {
-            margin: auto;
-            text-align: center;
-            width: 20%;
-            border-radius: 5px;
-            background-color: #f2f2f2;
-            padding: 40px;
-        }
+{% block title %} User Registration {% endblock %}
 
-    </style>
+{% block navbar_title %} - User Registration {% endblock %}
 
-</head>
-<body>
-    <div id="form1">
-         <form id="type_form" method="post" action="{% url 'register' %}">
-                    {% csrf_token %}
-              <input type="radio" name="user_type" value="student" checked> Student<br>
-              <input type="radio" name="user_type" value="instructor"> Instructor<br>
+{% block navbar %}
 
-              <input type="submit" value="next" />
-         </form>
-     </div>
-</body>
-</html>
+<div id="navbar" class="navbar-collapse collapse">
+
+</div><!--/.navbar-collapse -->
+
+{% endblock %}
+
+{% block body %}
+<div class="jumbotron">
+    <div class="container">
+    </div>
+</div>
+
+
+<div id="content">
+<div  align="center" class="container fullscreen">
+    <div class="col-sm-4">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Student</h3>
+            </div>
+            <div class="panel-body">
+                <p>A Student user can enroll to courses and see the available assignments. Also has the ability to
+                    create a team for an assignment or be suggested one based on the his/her qualifications.</p>
+                <p><a class="btn btn-default" href="/auth/register/student" name="user_type" value="student" role="button">Register &raquo;</a></p>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col-sm-4">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">Instructor</h3>
+            </div>
+            <div class="panel-body">
+                <p>An Instructor user can create assignments for his/her courses and define requirements that the teams
+                    must fulfil, such as minimum and maximum team size, must-have skills etc.</p>
+                <p><a class="btn btn-default" href="/auth/register/instructor" name="user_type" value="instructor" role="button">Register &raquo;</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

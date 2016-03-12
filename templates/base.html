@@ -34,6 +34,7 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/base.css' %}"/>
     {% block custom-style %}
 
     {% endblock %}
@@ -51,7 +52,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">University Team Allocator</a>
+            <a class="navbar-brand" href="#">University Team Allocator {% block navbar_title %}{% endblock %}</a>
         </div>
 
         {% block navbar %}
