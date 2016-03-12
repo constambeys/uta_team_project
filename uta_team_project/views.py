@@ -56,42 +56,19 @@ def home(request):
         # Construct a dictionary to pass to the template engine as its context.
         context_dict = {}
         user = request.user
+        context_dict['user'] = user
         if hasattr(request.user, 'student'):
             profile = request.user.student
-            context_dict['boldmessage'] = "Hello  " + user.first_name + " " + user.last_name + " " + str(
-                profile.matriculationNumber)
+            context_dict['student'] = profile
         elif hasattr(request.user, 'instructor'):
             profile = request.user.instructor
-            context_dict['boldmessage'] = "Hello  " + user.first_name + " " + user.last_name
+            context_dict['instructor'] = profile
         else:
             logout(request)  # Clear store session
             return HttpResponse("Oops something went wrong!!")  # Return a rendered response to send to the client.
 
-        return render(request, 'student_home.html', context_dict)
-    else:
-        return HttpResponse("Since you're logged in, you can see this text!")
-
-
-@login_required
-def assignments_view(request):
-    # ------------------------------use populate.py script--------------------------
-    if request.user.is_authenticated():
-
-        # Construct a dictionary to pass to the template engine as its context.
-        context_dict = {}
-        user = request.user
-        if hasattr(request.user, 'student'):
-            profile = request.user.student
-        elif hasattr(request.user, 'instructor'):
-            profile = request.user.instructor
-        else:
-            logout(request)  # Clear store session
-            return HttpResponse("Oops something went wrong!!")
-
-        # Return a rendered response to send to the client.
-        context_dict['username'] = user.username
         context_dict['assignments'] = profile.assignment_set.all()
-        return render(request, 'assignments_view.html', context_dict)
+        return render(request, 'student_home.html', context_dict)
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
 

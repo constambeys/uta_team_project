@@ -121,6 +121,8 @@ def create_instructor(username, firstname, lastname):
                                                  first_name=firstname,
                                                  last_name=lastname)
     if created:
+        user.set_password("1234")
+        user.save()
         instructor = Instructor(user=user)
         instructor.save()
 
