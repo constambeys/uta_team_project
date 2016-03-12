@@ -99,4 +99,4 @@ TEMPLATE_DIRS = (
     TEMPLATE_PATH,
 )
 
-LOGIN_URL = '/auth/login/'
+LOGIN_URL = '/'
