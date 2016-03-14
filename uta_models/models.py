@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 from django.template.defaultfilters import slugify
 
 
@@ -69,6 +70,7 @@ class Assignment(models.Model):
     course = models.ForeignKey(Course)
     requirements = models.ForeignKey(Requirement)
     students = models.ManyToManyField(Student)
+    deadline = models.DateTimeField(default=datetime.now, blank=True)
 
     def __unicode__(self):
         return "Assignment: " + self.name

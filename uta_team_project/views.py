@@ -11,6 +11,7 @@ from django.utils.safestring import mark_safe
 from calendar import HTMLCalendar
 import calendar
 from datetime import date
+from MyCalendar import MyCalendar
 
 
 def index(request):
@@ -23,11 +24,7 @@ def index(request):
         if user:
             if user.is_active:
                 login(request, user)
-
-                if hasattr(request.user, 'student'):
-                    return HttpResponseRedirect(reverse('student_home'))
-                else:
-                    return HttpResponseRedirect(reverse('instructor_home'))
+                return HttpResponseRedirect(reverse('home'))
             else:
 
                 return HttpResponse("Your Rango account is disabled.")
@@ -38,8 +35,19 @@ def index(request):
     else:
         return render(request, 'index.html', {})
 
-
 @login_required
+def home(request):
+    if request.user.is_authenticated():
+        if hasattr(request.user, 'student'):
+            return student_home(request)
+        elif hasattr(request.user, 'instructor'):
+            return instructor_home(request)
+        else:
+            logout(request)  # Clear store session
+            return HttpResponse("Oops something went wrong!!")
+    else:
+        return HttpResponse("Not logged in!")
+
 def student_home(request):
     if request.user.is_authenticated():
         context_dict = {}
@@ -49,15 +57,19 @@ def student_home(request):
         context_dict['assignments'] = Assignment.objects.filter(students__user=user)
         context_dict['groups'] = Group.objects.filter(students__user=user)
 
-        context_dict['calendar'] = mark_safe(HTMLCalendar(calendar.SUNDAY).formatmonth(date.today().year,
-                                                                                       date.today().month))
+        profile = request.user.student
+        deadlines = []
+        for a in profile.assignment_set.all():
+            deadlines.append(a.deadline)
+        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY,deadlines=deadlines).formatmonth(date.today().year, date.today().month)
+
+        context_dict['calendar'] = mark_safe(htmlStr)
 
         return render(request, 'student_home.html', context_dict)
     else:
         return HttpResponse("Not logged in!")
 
 
-@login_required
 def instructor_home(request):
     if request.user.is_authenticated():
 
@@ -66,7 +78,9 @@ def instructor_home(request):
 
         profile = request.user.instructor
         courses = []
+        deadlines = []
         for a in profile.assignment_set.all():
+            deadlines.append(a.deadline)
             if a.course not in courses:
                 courses.append(a.course)
 
@@ -74,8 +88,10 @@ def instructor_home(request):
         context_dict['courses'] = courses
         context_dict['assignments'] = profile.assignment_set.all()
 
-        context_dict['calendar'] = mark_safe(HTMLCalendar(calendar.SUNDAY).formatmonth(date.today().year,
-                                                                                       date.today().month))
+
+        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY,deadlines=deadlines).formatmonth(date.today().year, date.today().month)
+
+        context_dict['calendar'] = mark_safe(htmlStr)
 
         return render(request, 'instructor_home.html', context_dict)
     else:
