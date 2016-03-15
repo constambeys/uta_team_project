@@ -1,37 +1,65 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Rango</title>
-</head>
+{% extends 'base.html' %}
 
-<body>
-<h1>Username: {{ username }}</h1>
-<h1>Rango says...hello world!</h1>
+{% load static %}
 
-{% if groups %}
-    <ul>
-        {% for group in groups %}
-                <h3>{{ group.name }}</h3>
-                {% for student in group.students.all %}
-                         <li>{{ student.user.first_name }}  {{ student.user.last_name }}</li>
-                {% endfor %}
-        {% endfor %}
-    </ul>
-{% else %}
-    <strong>There are no groups present.</strong>
-{% endif %}
+{% block custom-style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/register.css' %}"/>
+{% endblock %}
 
-{% if no_group %}
-    <ul>
-        <h3>No Group</h3>
-        {% for student in no_group %}
-                <li>{{ student.user.first_name }}  {{ student.user.last_name }}</li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <strong>There are no student without group.</strong>
-{% endif %}
+{% block title %} Assignment View {% endblock %}
 
-<a href="{% url 'group_create' assignment.id %}"> Create Group</a>
-</body>
-</html
+{% block navbar_title %} - {{ assignment.name }}{% endblock %}
+
+{% block navbar %}
+
+    <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'group_create' assignment.id %}">Create team</a></li>
+        </ul>
+    </div><!--/.navbar-collapse -->
+
+{% endblock %}
+
+{% block body %}
+    <div class="jumbotron">
+        <div class="container">
+        </div>
+    </div>
+
+    {% if groups %}
+        <div class="container">
+            {% for group in groups %}
+                <div class="panel panel-primary">
+                    <div class="panel-heading">{{ group.name }}</div>
+                    <div class="panel-body">
+                        <ul>
+                            {% for student in group.students.all %}
+                                <li>{{ student.user.first_name }} {{ student.user.last_name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <strong>There are no groups present.</strong>
+    {% endif %}
+
+    {% if no_group %}
+        <div class="container">
+        <div class="panel panel-danger">
+            <div class="panel-heading">No Group</div>
+            <div class="panel-body">
+                <ul>
+                    {% for student in no_group %}
+                        <li>{{ student.user.first_name }} {{ student.user.last_name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% else %}
+        <strong>There are no student without group.</strong>
+    {% endif %}
+
+{% endblock %}
