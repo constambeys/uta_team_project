@@ -7,3 +7,19 @@
 .fullscreen {
        height: 60vh;
 }
+
+table{
+    border: 1px solid black;
+    table-layout: fixed;
+    width="100%"
+
+
+}
+
+th, td {
+    border: 1px solid black;
+    overflow: hidden;
+    width: 100px;
+    text-align:center;
+    vertical-align:middle;
+}
