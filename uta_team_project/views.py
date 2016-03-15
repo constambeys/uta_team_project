@@ -80,7 +80,7 @@ def instructor_home(request):
         courses = []
         deadlines = []
         for a in profile.assignment_set.all():
-            deadlines.append(a.deadline)
+            deadlines.append(a.deadline.date())
             if a.course not in courses:
                 courses.append(a.course)
 

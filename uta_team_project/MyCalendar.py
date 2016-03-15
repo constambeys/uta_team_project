@@ -10,7 +10,7 @@ class MyCalendar(HTMLCalendar):
     color_deadline = "#ffaddf"
 
     html = "<table border=\"0\" cellpadding=\"4\" cellspacing=\"0\">"
-    html = html + "<tr><td bgcolor=\"{0}\">14</td>"
+    html = html + "<tr><td bgcolor=\"{0}\">{1}</td>"
     html = html + "</tr></table>"
 
     def __init__(self, firstweekday, deadlines):
@@ -22,10 +22,10 @@ class MyCalendar(HTMLCalendar):
             cssclass = self.cssclasses[weekday]
             if date.today() == date(self.year, self.month, day):
                 cssclass += ' today'
-                body = self.html.format(self.color_today)
+                body = self.html.format(self.color_today, day)
                 return self.day_cell(cssclass, body)
             if date(self.year, self.month, day) in self.deadlines:
-                body = self.html.format(self.color_deadline)
+                body = self.html.format(self.color_deadline, day)
                 return self.day_cell(cssclass, body)
             return self.day_cell(cssclass, day)
         return self.day_cell('noday', '&nbsp;')
