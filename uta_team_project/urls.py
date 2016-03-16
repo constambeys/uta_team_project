@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     url(r'^assignment_create/', views.assignment_create, name='assignment_create'),
     url(r'^assignment_view/(?P<assignment_id>.*)/', views.assignment_view, name='assignment_view'),
     url(r'^group_create/(?P<assignment_id>.*)', views.group_create, name='group_create'),
+    url(r'^requirements_create/', views.requirements_create, name='requirements_create'),
     url(r'^auth/', include('uta_auth.urls')),
     url(r'^restricted/', views.restricted, name='restricted'),
 )

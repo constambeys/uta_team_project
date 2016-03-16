@@ -35,6 +35,7 @@ def index(request):
     else:
         return render(request, 'index.html', {})
 
+
 @login_required
 def home(request):
     if request.user.is_authenticated():
@@ -48,21 +49,23 @@ def home(request):
     else:
         return HttpResponse("Not logged in!")
 
+
 def student_home(request):
     if request.user.is_authenticated():
         context_dict = {}
         user = request.user
 
+        profile = request.user.student
+        deadlines = []
+        for a in profile.assignment_set.all():
+            deadlines.append(a.deadline.date())
+
         context_dict['username'] = user.username
         context_dict['assignments'] = Assignment.objects.filter(students__user=user)
         context_dict['groups'] = Group.objects.filter(students__user=user)
 
-        profile = request.user.student
-        deadlines = []
-        for a in profile.assignment_set.all():
-            deadlines.append(a.deadline)
-        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY,deadlines=deadlines).formatmonth(date.today().year, date.today().month)
-
+        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, deadlines=deadlines).formatmonth(date.today().year,
+                                                                                            date.today().month)
         context_dict['calendar'] = mark_safe(htmlStr)
 
         return render(request, 'student_home.html', context_dict)
@@ -88,9 +91,8 @@ def instructor_home(request):
         context_dict['courses'] = courses
         context_dict['assignments'] = profile.assignment_set.all()
 
-
-        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY,deadlines=deadlines).formatmonth(date.today().year, date.today().month)
-
+        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, deadlines=deadlines).formatmonth(date.today().year,
+                                                                                            date.today().month)
         context_dict['calendar'] = mark_safe(htmlStr)
 
         return render(request, 'instructor_home.html', context_dict)
@@ -226,6 +228,48 @@ def group_create(request, assignment_id):
 
     # Render the template depending on the context.
     return render(request, 'group_create.html', context_dict)
+
+
+@login_required
+def requirements_create(request):
+    # A boolean value for telling the template whether the registration was successful.
+    # Set to False initially. Code changes value to True when registration succeeds.
+    registered = False
+
+    # If it's a HTTP POST, we're interested in processing form data.
+    if request.method == 'POST':
+        # Attempt to grab information from the raw form information.
+        # Note that we make use of both UserForm and UserProfileForm.
+        req_form = RequirementsForm(data=request.POST)
+
+        # If the two forms are valid...
+        if req_form.is_valid():
+            # Save the user's form data to the database.
+            assign = req_form.save()
+
+            # Update our variable to tell the template registration was successful.
+            registered = True
+
+        # Invalid form or forms - mistakes or something else?
+        # Print problems to the terminal.
+        # They'll also be shown to the user.
+        else:
+            print req_form.errors
+
+    # Not a HTTP POST, so we render our form using two ModelForm instances.
+    # These forms will be blank, ready for user input.
+    else:
+        req_form = RequirementsForm()
+
+    # Create a context dictionary which we can pass to the template rendering engine.
+    context_dict = {}
+
+    # Adds our results list to the template context under name pages.
+    context_dict['req_form'] = req_form
+    context_dict['registered'] = registered
+
+    # Render the template depending on the context.
+    return render(request, 'requirements_create.html', context_dict)
 
 
 @login_required
