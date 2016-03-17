@@ -92,8 +92,8 @@ def populate():
     instructors = Instructor.objects.all()
 
     r = create_requirement(1, 2, rated_qualifications[1], rated_qualifications[5], rated_qualifications[9])
-    a = create_assignment("Assessed Exercise", instructors[0], courses[0], r, students[0], students[1], students[2],
-                          students[3])
+    a = create_assignment("Assessed Exercise", instructors[0], courses[0], r,[2016, 3, 14, 11, 06, 05], students[0], students[1], students[2],
+                          students[3], students[4])
 
     create_group("Team UTA1", a, students[0], students[1])
     create_group("Team UTA2", a, students[3])
@@ -103,7 +103,7 @@ def populate():
     assignments = Assignment.objects.all()
     groups = Group.objects.all()
 
-    a = create_assignment("Project", instructors[0], courses[0], r, students[0], students[1], students[2],
+    a = create_assignment("Project", instructors[0], courses[0], r, [2016, 3, 23, 11, 06, 05] ,students[0], students[1], students[2],
                           students[3])
 
     # PRINT DATA
@@ -192,11 +192,13 @@ def create_rated_qualification(name, rating):
     RatedQualification.objects.get_or_create(qualification=qualif, rating=rating)
 
 
-def create_assignment(name, instructor, course, requirements, *students):
+def create_assignment(name, instructor, course, requirements, deadline , *students):
+    deadline = datetime(deadline[0], deadline[1], deadline[2], deadline[3], deadline[4], deadline[5])
     (assignment, created) = Assignment.objects.get_or_create(name=name,
                                                              instructor=instructor,
                                                              course=course,
-                                                             requirements=requirements)
+                                                             requirements=requirements,
+                                                             deadline = deadline)
     if created:
         assignment.save()
         for s in students:
