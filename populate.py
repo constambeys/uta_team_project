@@ -3,6 +3,7 @@ import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "uta_team_project.settings")
 
 import django
+from uta_team_project.Matching import Matching
 
 django.setup()
 
@@ -37,33 +38,73 @@ def populate():
     create_qualification("SQL")
     create_qualification("UML")
 
+    create_rated_qualification("Java", 1)
+    create_rated_qualification("Java", 2)
+    create_rated_qualification("Java", 3)
+    create_rated_qualification("Java", 4)
+    create_rated_qualification("SQL", 1)
+    create_rated_qualification("SQL", 2)
+    create_rated_qualification("SQL", 3)
+    create_rated_qualification("SQL", 4)
+    create_rated_qualification("HTML", 1)
+    create_rated_qualification("HTML", 2)
+    create_rated_qualification("HTML", 3)
+    create_rated_qualification("HTML", 4)
+    create_rated_qualification("Python", 1)
+    create_rated_qualification("Python", 2)
+    create_rated_qualification("Python", 3)
+    create_rated_qualification("Python", 4)
+    create_rated_qualification("Matlab", 1)
+    create_rated_qualification("Matlab", 2)
+    create_rated_qualification("Matlab", 3)
+    create_rated_qualification("Matlab", 4)
+    create_rated_qualification("Javascript", 1)
+    create_rated_qualification("Javascript", 2)
+    create_rated_qualification("Javascript", 3)
+    create_rated_qualification("Javascript", 4)
+    create_rated_qualification("UML", 1)
+    create_rated_qualification("UML", 2)
+    create_rated_qualification("UML", 3)
+    create_rated_qualification("UML", 4)
+
     courses = Course.objects.all()
     departments = Department.objects.all()
     lvls = LevelOfStudy.objects.all()
-    instructors = Instructor.objects.all()
     qualifications = Qualification.objects.all()
-    students = Student.objects.all()
-    requirements = Requirement.objects.all()
-    assignments = Assignment.objects.all()
-    groups = Group.objects.all()
+    rated_qualifications = RatedQualification.objects.all()
 
-    create_student("nickozoulis", "Nickolas", "Zoulis", 2211892, departments[0], lvls[1])
-    create_student("geo", "Georgia", "Georgiou", 2223979, departments[1], lvls[1])
-    create_student("timo", "Timotheos", "Constambeys", 2215104, departments[0], lvls[1])
-    create_student("tsveti", "Tsvetelina", "Nikolova", 2199619, departments[5], lvls[1])
+    create_student("nickozoulis", "Nickolas", "Zoulis", 2211892, departments[0], lvls[1], rated_qualifications[1],
+                   rated_qualifications[5], rated_qualifications[9])
+    create_student("geo", "Georgia", "Georgiou", 2223979, departments[1], lvls[1], rated_qualifications[1],
+                   rated_qualifications[4], rated_qualifications[12])
+    create_student("timo", "Timotheos", "Constambeys", 2215104, departments[0], lvls[1], rated_qualifications[0],
+                   rated_qualifications[14], rated_qualifications[8])
+    create_student("tsveti", "Tsvetelina", "Nikolova", 2199619, departments[5], lvls[1], rated_qualifications[0],
+                   rated_qualifications[4], rated_qualifications[8])
+    create_student("natascha", "Natascha", "Harth", 2222222, departments[1], lvls[1], rated_qualifications[14],
+                   rated_qualifications[10])
 
     create_instructor("leifos", "Leif", "Azzopardi")
     create_instructor("jozef", "Jozeph", "Maguire")
     create_instructor("rosa", "Rosanne", "English")
 
-    r = create_requirement(1, 2, qualifications[0], qualifications[1])
+    students = Student.objects.all()
+    instructors = Instructor.objects.all()
+
+    r = create_requirement(1, 2, rated_qualifications[1], rated_qualifications[5], rated_qualifications[9])
     a = create_assignment("Assessed Exercise", instructors[0], courses[0], r, students[0], students[1], students[2],
                           students[3])
-    create_group("Team UTA", a, students[0], students[1])
+
+    create_group("Team UTA1", a, students[0], students[1])
+    create_group("Team UTA2", a, students[3])
+    create_group("Team UTA3", a, students[2], students[3])
+
+    requirements = Requirement.objects.all()
+    assignments = Assignment.objects.all()
+    groups = Group.objects.all()
 
     a = create_assignment("Project", instructors[0], courses[0], r, students[0], students[1], students[2],
                           students[3])
-    create_group("Team UTA", a, students[0], students[1])
 
     # PRINT DATA
     for x in departments:
@@ -76,6 +117,9 @@ def populate():
         print "{0}".format(str(x))
 
     for x in qualifications:
+        print "{0}".format(str(x))
+
+    for x in rated_qualifications:
         print "{0}".format(str(x))
 
     for x in students:
@@ -93,6 +137,11 @@ def populate():
     for x in groups:
         print "{0}".format(str(x))
 
+    # Test Matching
+    # ranks = Matching(groups, r, students[4]).rank()
+    #
+    # print ranks
+
 
 def create_course(name):
     return Course.objects.get_or_create(name=name)[0]
@@ -106,7 +155,7 @@ def create_lvl_of_study(lvl):
     LevelOfStudy.objects.get_or_create(lvl=lvl)
 
 
-def create_student(username, firstname, lastname, matriculation_number, department, lvl):
+def create_student(username, firstname, lastname, matriculation_number, department, lvl, *rated_qualifications):
     (user, created) = User.objects.get_or_create(username=username,
                                                  first_name=firstname,
                                                  last_name=lastname)
@@ -117,6 +166,9 @@ def create_student(username, firstname, lastname, matriculation_number, departme
         student.matriculationNumber = matriculation_number
         student.department = department
         student.lvlOfStudy = lvl
+        student.save()
+        for rated_qualif in rated_qualifications:
+            student.rated_qualifications.add(rated_qualif)
         student.save()
 
 
@@ -133,6 +185,11 @@ def create_instructor(username, firstname, lastname):
 
 def create_qualification(name):
     Qualification.objects.get_or_create(name=name)
+
+
+def create_rated_qualification(name, rating):
+    qualif = Qualification.objects.get(name=name)
+    RatedQualification.objects.get_or_create(qualification=qualif, rating=rating)
 
 
 def create_assignment(name, instructor, course, requirements, *students):
@@ -161,14 +218,14 @@ def create_group(name, assignment, *students):
     return group
 
 
-def create_requirement(min_group_size, max_group_size, *qualifications):
+def create_requirement(min_group_size, max_group_size, *rated_qualifications):
     (requirement, created) = Requirement.objects.get_or_create(min_group_size=min_group_size,
                                                                max_group_size=max_group_size)
 
     if created:
         requirement.save()
-        for q in qualifications:
-            requirement.qualifications.add(q)
+        for q in rated_qualifications:
+            requirement.rated_qualifications.add(q)
         requirement.save()
 
     return requirement
