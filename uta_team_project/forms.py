@@ -17,8 +17,7 @@ class GroupForm(forms.ModelForm):
 class RequirementsForm(forms.ModelForm):
     class Meta:
         model = Requirement
-        fields = ('qualifications', 'min_group_size', 'max_group_size')
-
+        fields = ('rated_qualifications', 'min_group_size', 'max_group_size')
 
 
 class CourseAssignmentForm(forms.Form):
