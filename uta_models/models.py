@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.template.defaultfilters import slugify
 
 
@@ -35,15 +36,26 @@ class Qualification(models.Model):
         return self.name
 
 
+class RatedQualification(models.Model):
+    qualification = models.ForeignKey(Qualification)
+    rating = models.IntegerField(default=1, validators=[
+            MaxValueValidator(4),
+            MinValueValidator(1)
+        ])
+
+    def __unicode__(self):
+        return "RatedQualification: " + self.qualification.name + " " + str(self.rating)
+
+
 class Requirement(models.Model):
     min_group_size = models.IntegerField(default=1)
     max_group_size = models.IntegerField(default=2)
-    qualifications = models.ManyToManyField(Qualification)
+    rated_qualifications = models.ManyToManyField(RatedQualification)
 
     def __unicode__(self):
         return "Requirement: min group size " + str(self.min_group_size) + ", max group size " + str(
             self.max_group_size)
-        + ", " + self.qualifications
+        + ", " + self.rated_qualifications
 
 
 class Instructor(models.Model):
@@ -58,7 +70,7 @@ class Student(models.Model):
     matriculationNumber = models.IntegerField(unique=True)
     department = models.ForeignKey(Department)
     lvlOfStudy = models.ForeignKey(LevelOfStudy)
-    qualifications = models.ManyToManyField(Qualification)
+    rated_qualifications = models.ManyToManyField(RatedQualification)
 
     def __unicode__(self):
         return "Student: " + self.user.username
