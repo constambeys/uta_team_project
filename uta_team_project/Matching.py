@@ -29,8 +29,8 @@ class Matching:
         # Compute benefit foreach group
         benefits = [self.compute_benefit(g) for g in group_scores]
 
-        # Map primary keys to their benefits -> (primary_key, benefit)
-        zipped = zip(self.pks, benefits)
+        # Map primary keys to their benefits -> (group, benefit)
+        zipped = zip(self.groups, benefits)
 
         # Sort tuples by second argument -> benefit
         return sorted(zipped, key=lambda x: x[1], reverse=True)
