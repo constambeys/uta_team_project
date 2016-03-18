@@ -50,45 +50,25 @@ def home(request):
     else:
         return HttpResponse("Not logged in!")
 
-
 @login_required
-def find_team(request):
-    if request.user.is_authenticated():
-        if hasattr(request.user, 'student'):
-            context_dict = {}
-            user = request.user
-            student = request.user.student
-            context_dict['rankExist'] = False
+def find_team(request, assignment_id):
 
-            if request.method == 'POST':
-                course_assignment_form = CourseAssignmentForm(data=request.POST)
+    context_dict = {}
+    # The assignment that the user has selected
+    assignment = Assignment.objects.get(id=assignment_id)
+    requirements = assignment.requirements
+    groups = Group.objects.filter(assignment__name=assignment.name)
 
-                if course_assignment_form.is_valid():
-                    # The assignment that the user has selected
-                    assignment = course_assignment_form.cleaned_data['course_assignment']
-                    requirements = assignment.requirements
-                    groups = Group.objects.filter(assignment__name=assignment.name)
+    groups_benefits = Matching(groups, requirements, request.user.student).rank()
 
-                    groups_benefits = Matching(groups, requirements, student).rank()
+    ranked_groups = [g for (g, b) in groups_benefits]
 
-                    ranked_groups = [g for (g, b) in groups_benefits]
+    print ranked_groups
 
-                    print ranked_groups
-
-                    context_dict['rankExist'] = True
-                    context_dict['ranked_groups'] = ranked_groups
-                    return render(request, 'find_team.html', context_dict)
-                else:
-                    return HttpResponse("Oops something went wrong!!")
-            else:
-                context_dict['username'] = user.username
-                context_dict['course_form'] = CourseAssignmentForm()
-                return render(request, 'find_team.html', context_dict)
-        else:
-            logout(request)  # Clear store session
-            return HttpResponse("Oops something went wrong!!")
-    else:
-        return HttpResponse("Not logged in!")
+    context_dict['rankExist'] = True
+    context_dict['ranked_groups'] = ranked_groups
+    context_dict['assignment'] = assignment
+    return render(request, 'find_team.html', context_dict)
 
 
 @login_required

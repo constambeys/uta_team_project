@@ -14,7 +14,8 @@
         <ul class="nav navbar-nav">
             <li><a href="{% url 'home' %}">Home</a></li>
             <li><a href="{% url 'assignment_view' assignment_id %}">Assignment</a></li>
-            <li class="active"><a href="{% url 'requirements_create' %}">Create requirements</a></li>
+            <li class="active"><a href="{% url 'team_create' assignment.id %}">Create team</a></li>
+            <li><a href="{% url 'find_team' assignment.id %}">Find team</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="#profile">{{ username }}</a></li>
