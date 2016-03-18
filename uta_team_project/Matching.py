@@ -7,7 +7,6 @@ class Matching:
     def __init__(self, groups, requirements, student):
         self.dim = Qualification.objects.count()
         self.groups = groups
-
         # Keep only the groups that are not full of members
         self.groups = [g for g in groups if len(g.students.all()) < requirements.max_group_size]
 
