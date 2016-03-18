@@ -32,6 +32,7 @@ class Matching:
         # Sort tuples by second argument -> benefit, return only top 3
         return sorted(zipped, key=lambda x: x[1], reverse=True)[:3]
 
+    # Element-wise aggregation (sum) of the qualification vectors.
     def compute_group_scores(self, groups):
         groups_scores = []
 
@@ -45,6 +46,7 @@ class Matching:
 
         return groups_scores
 
+    # Convert rated qualification list to fit to vector space model.
     def create_ndim_qualif_vector(self, rated_qualifications, filter=True):
         qualif_vector = np.zeros((self.dim,), dtype=np.int)
 
