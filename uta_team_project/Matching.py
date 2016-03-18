@@ -69,7 +69,7 @@ class Matching:
             s = self.student_rated_qualif_vector[index]
             g = group_scores[index]
 
-            #if g+s > r then benefit = r-g
+            # if g+s > r then benefit = r-g
             benefit += min(r, g + s) - g
 
         return benefit
