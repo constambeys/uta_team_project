@@ -7,14 +7,9 @@ class Matching:
     def __init__(self, groups, requirements, student):
         self.dim = Qualification.objects.count()
         self.groups = groups
-        # Groups' primary keys
-        self.pks = [g.pk for g in groups]
-
-        self.requirements = requirements
 
         self.all_qualifs = []
-        all_qualifications = Qualification.objects.all()
-        for qualif in all_qualifications:
+        for qualif in Qualification.objects.all():
             self.all_qualifs.append(str(qualif.name))
         # print self.all_qualifs
 
@@ -72,9 +67,7 @@ class Matching:
             s = self.student_rated_qualif_vector[index]
             g = group_scores[index]
 
-            if r > g:
-                temp = r - g
-                if s > temp:
-                    benefit += s - temp
+            #if g+s > r then benefit = r-g
+            benefit += min(r, g + s) - g
 
         return benefit

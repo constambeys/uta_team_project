@@ -11,4 +11,9 @@ div > img {
   max-width: 100%;
 }
 
-
+.img-background {
+  background-image: url("/static/images/students-logo-img.png");
+  background-position: center;
+  background-size: cover;
+  height:850px;
+}

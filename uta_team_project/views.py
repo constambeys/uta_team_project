@@ -244,7 +244,7 @@ def assignment_view(request, assignment_id):
 
 
 @login_required
-def group_create(request, assignment_id):
+def team_create(request, assignment_id):
     # A boolean value for telling the template whether the registration was successful.
     # Set to False initially. Code changes value to True when registration succeeds.
     registered = False
@@ -283,13 +283,14 @@ def group_create(request, assignment_id):
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
 
+    context_dict['username'] = request.user.username
     # Adds our results list to the template context under name pages.
     context_dict['assignment_id'] = assignment_id
     context_dict['group_form'] = group_form
     context_dict['registered'] = registered
 
     # Render the template depending on the context.
-    return render(request, 'group_create.html', context_dict)
+    return render(request, 'team_create.html', context_dict)
 
 
 @login_required

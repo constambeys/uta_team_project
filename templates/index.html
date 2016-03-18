@@ -10,19 +10,12 @@
 
 {% block navbar %}
     <div id="navbar" class="navbar-collapse collapse">
-        <form class="navbar-form navbar-right" action="{% url 'register' %}">
+        <form class="navbar-form navbar-right">
             {% csrf_token %}
-            <button class="btn btn-success">Register</button>
-        </form>
-        <form class="navbar-form navbar-right" method="post" action="{% url 'index' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <input type="text" name="username" placeholder="Username" class="form-control">
-            </div>
-            <div class="form-group">
-                <input type="password" name="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" value="submit" class="btn btn-success">Login</button>
+            <button class="btn btn-success">About us</button>
+            <button class="btn btn-success">Who uses UTA?</button>
+            <button class="btn btn-success">Features</button>
+            <button class="btn btn-success">Help</button>
         </form>
     </div><!--/.navbar-collapse -->
 {% endblock %}
@@ -30,41 +23,81 @@
 
 {% block body %}
     <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-        <div class="container">
-
-            <img src="{% static "images/students-logo-img.jpg" %}" alt="Picture of Rango"/>
+    <div class="jumbotron" style="padding: 0px">
+        <div class="container img-background" style="width:100%; margin: 0px;">
+            <div class="col-sm-4 col-sm-offset-4" style="padding-top: 300px">
+                <form method="post" action="{% url 'index' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" name="username" placeholder="Username" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Password" class="form-control">
+                    </div>
+                    <div class="col-sm-6" style="padding-left: 0px">
+                        <button type="submit" value="submit" class="btn btn-success btn-block">Login</button>
+                    </div>
+                    <form action="{% url 'register' %}">
+                    {% csrf_token %}
+                    <div class="col-sm-6" style="padding-right: 0px">
+                        <button class="btn btn-success btn-block">Register</button>
+                    </div>
+                </form>
+            </div>
+            <!--<img src="{% static "images/students-logo-img.jpg" %}" alt="Picture of Rango"/>-->
             <!--<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>-->
         </div>
     </div>
 
-    <div class="container">
+    <div class="slogan" style="text-align: center">
+        <img src="/static/images/logo.png" style="height:80px;">
+        <br><h4 style="color:green;"> Finding the right team can be that easy! {% block navbar_text %}{% endblock %}</h4></br>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top:20px">
         <!-- Example row of columns -->
         <div class="row">
-            <div class="col-md-4">
-                <h2>Heading</h2>
-                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor
-                    mauris
-                    condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
-                    euismod. Donec sed odio dui. </p>
+            <div class="col-md-4" style="text-align: center">
+                <h2>Create Profile</h2>
                 <!-- <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p> -->
             </div>
-            <div class="col-md-4">
-                <h2>Heading</h2>
-                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor
-                    mauris
-                    condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
-                    euismod. Donec sed odio dui. </p>
+            <div class="col-md-4" style="text-align: center">
+                <h2>Find Assignment</h2>
                 <!-- <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p> -->
             </div>
-            <div class="col-md-4">
-                <h2>Heading</h2>
-                <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
-                    porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
-                    ut
-                    fermentum massa justo sit amet risus.</p>
+            <div class="col-md-4" style="text-align: center">
+                <h2>Form a Team</h2>
                 <!-- <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p> -->
             </div>
         </div>
+        <div class="row" style="text-align: center">
+            <div class="col-sm-2 col-sm-offset-1" style="margin-top:10px">
+                <img src="/static/images/create-profile.png" style="height:100px;">
+            </div>
+            <div class="col-sm-2" style="margin-top:10px">
+                <img src="/static/images/arrow.png" style="height:60px;">
+            </div>
+            <div class="col-sm-2" style="margin-top:10px">
+                <img src="/static/images/find-assignment.png" style="height:100px;">
+            </div>
+            <div class="col-sm-2" style="margin-top:10px">
+                <img src="/static/images/arrow.png" style="height:60px;">
+            </div>
+            <div class="col-sm-2" style="margin-top:10px">
+                <img src="/static/images/form-team.png" style="height:100px;">
+            </div>
+        </div>
     </div>
+
+    <div class="apps" style="margin-top: 35px">
+        <br><img src="/static/images/meet-on-the-go.png" style="width:100%; margin: 0px;">
+    </div>
+
+    <div style="margin-top:15px; margin-right: 320px;">
+        <div class="pull-right">
+            <a class="login" style="color:coral"; href="#"> SIGNUP >>> </a>
+        </div>
+    </div>
+    <div class="clearfix"></div>
 {% endblock %}

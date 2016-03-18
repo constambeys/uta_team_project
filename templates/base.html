@@ -52,7 +52,9 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">University Team Allocator {% block navbar_title %}{% endblock %}</a>
+
+            <a class="navbar-brand" href="#"> <img src="/static/images/logo.png" style="height: 110%; margin-top:-5px" {% block navbar_log  %}{% endblock %}</a>
+            <a class="navbar-brand" href="#" style="margin-right: 280px;"> UTA | The University Team Allocator</a> {% block navbar_title %}{% endblock %}
         </div>
 
         {% block navbar %}
@@ -65,12 +67,19 @@
 
 {% endblock %}
 
-<div class="container">
-    <hr>
-    <footer>
-        <p>&copy; 2016 Team UTA</p>
-    </footer>
-</div> <!-- /container -->
+<footer>
+    <div class="container" style="padding-top:27px; text-align: center">
+        <div class="pull-right">
+            <img src="/static/images/twitter_logo.png" style="height:20px;">
+            <img src="/static/images/facebook_logo.png" style="height:20px;">
+            <img src="/static/images/Linkedin-logo.png" style="height:20px;">
+            <br><p> Copyright &copy; UTA2016 </p>
+        </div>
+        <div class="terms pull-left">
+            <p style="margin-top:0px">Terms & Conditions <br>Privacy Policy</p>
+        </div>
+    </div>
+</footer><!-- /container -->
 
 
 <!-- Bootstrap core JavaScript
