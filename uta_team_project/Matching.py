@@ -8,6 +8,9 @@ class Matching:
         self.dim = Qualification.objects.count()
         self.groups = groups
 
+        # Keep only the groups that are not full of members
+        self.groups = [g for g in groups if len(g.students.all()) < requirements.max_group_size]
+
         self.all_qualifs = []
         for qualif in Qualification.objects.all():
             self.all_qualifs.append(str(qualif.name))
