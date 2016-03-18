@@ -31,13 +31,10 @@
 
 <div id="content" class="container fullscreen">
     <div class="row" id="teams-panel">
-        <div class="col-sm-4">
-
-        </div>
 
         {% if rankExist %}
         {% for group in ranked_groups %}
-        <div class="team-panel">
+        <div class="team-panel col-sm-offset-4">
             <div class="panel panel-primary">
                 <div class="panel-heading">{{ group.name }}</div>
                 <div class="panel-body">
@@ -57,7 +54,7 @@
         </div>
         {% endfor %}
         {% else %}
-        <div class="col-sm-4">
+        <div class="col-sm-4 col-sm-offset-4">
             <div class="panel panel-success">
                 <div class="panel-heading">
                     <h3 id="title-choose-assignment" class="panel-title">Choose Assignment</h3>
@@ -84,9 +81,7 @@
 
         {% endif %}
 
-        <div class="col-sm-4">
 
-        </div>
     </div>
 </div>
 
