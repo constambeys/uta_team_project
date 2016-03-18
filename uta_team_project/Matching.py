@@ -29,7 +29,7 @@ class Matching:
         # Map primary keys to their benefits -> (group, benefit)
         zipped = zip(self.groups, benefits)
 
-        # Sort tuples by second argument -> benefit
+        # Sort tuples by second argument -> benefit, return only top 3
         return sorted(zipped, key=lambda x: x[1], reverse=True)[:3]
 
     def compute_group_scores(self, groups):
