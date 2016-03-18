@@ -65,7 +65,6 @@ def find_team(request, assignment_id):
 
     print ranked_groups
 
-    context_dict['rankExist'] = True
     context_dict['ranked_groups'] = ranked_groups
     context_dict['assignment'] = assignment
     return render(request, 'find_team.html', context_dict)
@@ -77,8 +76,11 @@ def select_team(request, team_id):
         if hasattr(request.user, 'student'):
             team = Group.objects.get(pk=team_id)
 
-            team.students.add(request.user.student)
-            team.save()
+            if len(team.students.all()) < team.assignment.requirements.max_group_size:
+                team.students.add(request.user.student)
+                team.save()
+            else:
+                return HttpResponse("Cannot complete operation. This team is now full!")
 
             return HttpResponseRedirect(reverse('home'))
         else:
