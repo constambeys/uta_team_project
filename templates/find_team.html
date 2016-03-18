@@ -35,8 +35,13 @@
     <div class="row" id="teams-panel">
 
         {% for group in ranked_groups %}
+
         <div class="team-panel">
+            {% if group == top_group %}
             <div class="panel panel-primary">
+                {% else %}
+                <div class="panel panel-success">
+                {% endif %}
                 <div class="panel-heading">{{ group.name }}</div>
                 <div class="panel-body">
                     <div id="div-team">
