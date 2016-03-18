@@ -3,93 +3,60 @@
 {% load static %}
 
 {% block custom-style %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/find_team.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'styles/find_team.css' %}"/>
 {% endblock %}
 
 {% block title %} Find Team {% endblock %}
 
 {% block navbar %}
 
-    <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'assignment_view' assignment.id %}">Assignment</a></li>
-            <li><a href="{% url 'team_create' assignment.id %}">Create team</a></li>
-            <li class="active"><a href="{% url 'find_team' assignment.id %}">Find team</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="#profile"> {{ username }}</a></li>
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-        </ul>
-    </div><!--/.navbar-collapse -->
+<div id="navbar" class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'assignment_view' assignment.id %}">Assignment</a></li>
+        <li><a href="{% url 'team_create' assignment.id %}">Create team</a></li>
+        <li class="active"><a href="{% url 'find_team' assignment.id %}">Find team</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="#profile"> {{ username }}</a></li>
+        <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+</div><!--/.navbar-collapse -->
 
 {% endblock %}
 
 {% block body %}
-    <div class="jumbotron">
-        <div class="container">
-        </div>
+<div class="jumbotron">
+    <div class="container">
     </div>
+</div>
 
-    <div id="content" class="container fullscreen">
-        <div class="row" id="teams-panel">
-            <div class="col-sm-4">
+<div id="content" class="container fullscreen">
+    <div class="row" id="teams-panel">
 
-            </div>
+        {% for group in ranked_groups %}
+        <div class="team-panel">
+            <div class="panel panel-primary">
+                <div class="panel-heading">{{ group.name }}</div>
+                <div class="panel-body">
+                    <div id="div-team">
+                        <ul>
+                            {% for student in group.students.all %}
+                            <li>{{ student.user.first_name }} {{ student.user.last_name }}</li>
+                            {% endfor %}
+                        </ul>
 
-            {% if rankExist %}
-                {% for group in ranked_groups %}
-                    <div class="team-panel">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">{{ group.name }}</div>
-                            <div class="panel-body">
-                                <div id="div-team">
-                                    <ul>
-                                        {% for student in group.students.all %}
-                                            <li>{{ student.user.first_name }} {{ student.user.last_name }}</li>
-                                        {% endfor %}
-                                    </ul>
-
-                                    <p><a class="btn btn-default"
-                                          href="{% url 'select_team' group.pk %}"
-                                          role="button">Select</a></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div class="col-sm-4">
-                    <div class="panel panel-success">
-                        <div class="panel-heading">
-                            <h3 id="title-choose-assignment" class="panel-title">Choose Assignment</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div id="form">
-                                <form id="course_form" method="post" action="{% url 'find_team' %}"
-                                      enctype="multipart/form-data">
-
-                                    {% csrf_token %}
-
-                                    {% for field in course_form %}
-                                        {{ field.errors }}
-                                        {{ field }}
-
-                                    {% endfor %}
-
-                                    <input id="submit" type="submit" name="submit" value="Find team"/>
-                                </form>
-                            </div>
-                        </div>
+                        <p><a class="btn btn-default"
+                              href="{% url 'select_team' group.pk %}"
+                              role="button">Select</a></p>
                     </div>
                 </div>
-
-            {% endif %}
-
-            <div class="col-sm-4">
-
             </div>
         </div>
+        {% endfor %}
+
+
     </div>
+</div>
 
 {% endblock %}
