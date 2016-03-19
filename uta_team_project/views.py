@@ -50,9 +50,9 @@ def home(request):
     else:
         return HttpResponse("Not logged in!")
 
+
 @login_required
 def find_team(request, assignment_id):
-
     context_dict = {}
     # The assignment that the user has selected
     assignment = Assignment.objects.get(id=assignment_id)
@@ -218,7 +218,7 @@ def assignment_view(request, assignment_id):
 
         context_dict['assignment'] = assignment
         context_dict['groups'] = groups
-        context_dict['no_group'] = getNoGroup(assignment)
+        context_dict['no_group'] = assignment.students.filter(group=None)
         return render(request, 'assignment_view.html', context_dict)
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
@@ -229,12 +229,13 @@ def team_create(request, assignment_id):
     # A boolean value for telling the template whether the registration was successful.
     # Set to False initially. Code changes value to True when registration succeeds.
     registered = False
-
+    assignment = Assignment.objects.get(id=assignment_id)
+    limit = assignment.requirements.max_group_size
     # If it's a HTTP POST, we're interested in processing form data.
     if request.method == 'POST':
         # Attempt to grab information from the raw form information.
         # Note that we make use of both UserForm and UserProfileForm.
-        group_form = GroupForm(data=request.POST)
+        group_form = GroupForm(data=request.POST, limit=limit, students=assignment.students.filter(group=None))
 
         # If the two forms are valid...
         if group_form.is_valid():
@@ -259,7 +260,7 @@ def team_create(request, assignment_id):
     # Not a HTTP POST, so we render our form using two ModelForm instances.
     # These forms will be blank, ready for user input.
     else:
-        group_form = GroupForm()
+        group_form = GroupForm(limit=limit, students=assignment.students.filter(group=None))
 
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
