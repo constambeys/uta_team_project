@@ -3,68 +3,74 @@
 {% load static %}
 
 {% block custom-style %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/register.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'styles/find_team.css' %}"/>
 {% endblock %}
 
 {% block navbar %}
 
-    <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li class="active"><a href="{% url 'assignment_view' assignment.id %}">Assignment</a></li>
-            {% if user_type == "student" %}
-            <li><a href="{% url 'team_create' assignment.id %}">Create team</a></li>
-            <li><a href="{% url 'find_team' assignment.id %}">Find team</a></li>
-            {% endif %}
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="#profile">{{ username }}</a></li>
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-        </ul>
-    </div><!--/.navbar-collapse -->
+<div id="navbar" class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li class="active"><a href="{% url 'assignment_view' assignment.id %}">Assignment</a></li>
+        {% if user_type == "student" %}
+        <li><a href="{% url 'team_create' assignment.id %}">Create team</a></li>
+        <li><a href="{% url 'find_team' assignment.id %}">Find team</a></li>
+        {% endif %}
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="#profile">{{ username }}</a></li>
+        <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+</div><!--/.navbar-collapse -->
 
 {% endblock %}
 
 {% block body %}
-    <div class="jumbotron" style="padding-bottom: 30px; padding-top: 30px">
-        <div class="container">
-            <h3>{{ assignment.name }}  </h3>
-        </div>
+<div class="jumbotron" style="padding-bottom: 30px; padding-top: 30px">
+    <div class="container">
+        <h3>{{ assignment.name }} </h3>
     </div>
+</div>
 
-    {% if groups %}
-        <div class="container">
-            {% for group in groups %}
-                <div class="panel panel-primary">
-                    <div class="panel-heading">{{ group.name }}</div>
-                    <div class="panel-body">
-                        <ul>
-                            {% for student in group.students.all %}
-                                <li>{{ student.user.first_name }} {{ student.user.last_name }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+{% if groups %}
+<div class="container">
+    <div class="row">
+        {% for group in groups %}
+        <div class="col-sm-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">{{ group.name }}</div>
+                <div class="panel-body">
+                    <ul>
+                        {% for student in group.students.all %}
+                        <li>{{ student.user.first_name }} {{ student.user.last_name }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
-            {% endfor %}
+            </div>
         </div>
-    {% else %}
-        <!-- <strong>There are no groups present.</strong> -->
-    {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<!-- <strong>There are no groups present.</strong> -->
+{% endif %}
 
-    {% if no_group %}
-        <div class="container">
-        <div class="panel panel-danger">
-            <div class="panel-heading">No Group</div>
-            <div class="panel-body">
+{% if no_group %}
+<div class="container" style="text-align: center">
+    <div class="panel panel-danger">
+        <div class="panel-heading">No Group Students</div>
+        <div class="panel-body">
+            <div class="div-team">
                 <ul>
                     {% for student in no_group %}
-                        <li>{{ student.user.first_name }} {{ student.user.last_name }}</li>
+                    <li>{{ student.user.first_name }} {{ student.user.last_name }}</li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
+    </div>
     {% else %}
-        <!-- <strong>There are no student without group.</strong> -->
+    <!-- <strong>There are no student without group.</strong> -->
     {% endif %}
 
-{% endblock %}
+    {% endblock %}
