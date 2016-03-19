@@ -40,7 +40,7 @@ input {
     vertical-align:middle;
 }
 
-#div-team {
+.div-team {
     display: flex;
     align-items: center;
     display: clear;

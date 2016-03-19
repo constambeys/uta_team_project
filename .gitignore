@@ -76,3 +76,5 @@ target/
 #Mac hidden file
 .DS_Store
 
+#ignore deleted files
+*~
