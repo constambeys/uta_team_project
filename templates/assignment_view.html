@@ -12,8 +12,10 @@
         <ul class="nav navbar-nav">
             <li><a href="{% url 'home' %}">Home</a></li>
             <li class="active"><a href="{% url 'assignment_view' assignment.id %}">Assignment</a></li>
+            {% if user_type == "student" %}
             <li><a href="{% url 'team_create' assignment.id %}">Create team</a></li>
             <li><a href="{% url 'find_team' assignment.id %}">Find team</a></li>
+            {% endif %}
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="#profile">{{ username }}</a></li>
