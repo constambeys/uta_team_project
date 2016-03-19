@@ -203,15 +203,19 @@ def assignment_view(request, assignment_id):
         # Construct a dictionary to pass to the template engine as its context.
         context_dict = {}
         user = request.user
+
         if hasattr(request.user, 'student'):
             profile = request.user.student
+            user_type = "student"
         elif hasattr(request.user, 'instructor'):
             profile = request.user.instructor
+            user_type = "instructor"
         else:
             logout(request)  # Clear store session
             return HttpResponse("Oops something went wrong!!")
 
         # Return a rendered response to send to the client.
+        context_dict['user_type'] = user_type
         context_dict['username'] = user.username
         assignment = Assignment.objects.get(id=assignment_id)
         groups = assignment.group_set.all()
