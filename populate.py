@@ -236,4 +236,5 @@ def create_requirement(min_group_size, max_group_size, *rated_qualifications):
 if __name__ == '__main__':
     print "Starting population script..."
     populate()
+
     
