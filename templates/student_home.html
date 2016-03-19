@@ -36,7 +36,8 @@
                                         <ul>
                                             {% for assignment in assignments %}
                                                 <li>
-                                                    <a style="color: cadetblue"; href="{% url 'assignment_view' assignment.id %}">{{ assignment.course }}
+                                                    <a style="color: cadetblue" ;
+                                                       href="{% url 'assignment_view' assignment.id %}">{{ assignment.course }}
                                                         - {{ assignment.name }}</a></li>
                                             {% endfor %}
                                         </ul>
@@ -52,7 +53,7 @@
                                 <div class="panel-heading">
                                     <h3 class="panel-title">My Teams</h3>
                                 </div>
-                                <div class="panel-body" style="color: cadetblue";>
+                                <div class="panel-body" style="color: cadetblue" ;>
                                     {% if groups %}
                                         <ul>
                                             {% for group in groups %}
