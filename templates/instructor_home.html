@@ -11,12 +11,10 @@
 {% block navbar %}
 
     <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="{% url 'assignment_create' %}">Create assignment</a></li>
-            <li><a href="{% url 'requirements_create' %}">Create requirements</a></li>
-        </ul>
         <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="{% url 'assignment_create' %}">Create Assignment</a></li>
+            <li><a href="{% url 'requirements_create' %}">Create Requirements</a></li>
             <li><a href="#profile">{{ username }}</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
@@ -25,12 +23,9 @@
 {% endblock %}
 
 {% block body %}
-    <div class="jumbotron">
-        <div class="container">
-        </div>
-    </div>
-
-    <div class="container">
+    <div class="jumbotron" style="padding: 0px">
+        <div class="container img-background" style="width:100%; margin: 0px;">
+            <div class="container" style="padding-top: 280px">
         <div class="row">
             <div class="col-sm-4">
                 <div class="panel panel-success">
@@ -84,5 +79,9 @@
             </div><!-- /.col-sm-4 -->
         </div>
     </div>
+        </div>
+    </div>
+
+
 
 {% endblock %}
