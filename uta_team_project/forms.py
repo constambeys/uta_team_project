@@ -6,7 +6,7 @@ from uta_models.models import *
 class AssignmentForm(forms.ModelForm):
     class Meta:
         model = Assignment
-        fields = ('name', 'instructor', 'course', 'requirements', 'deadline')
+        fields = ('name', 'instructor', 'course', 'deadline')
 
 
 class GroupForm(forms.ModelForm):

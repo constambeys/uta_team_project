@@ -148,20 +148,24 @@ def instructor_home(request):
 
 @login_required
 def assignment_create(request):
-    # A boolean value for telling the template whether the registration was successful.
-    # Set to False initially. Code changes value to True when registration succeeds.
-    registered = False
 
-    # If it's a HTTP POST, we're interested in processing form data.
     if request.method == 'POST':
-        # Attempt to grab information from the raw form information.
-        # Note that we make use of both UserForm and UserProfileForm.
         assign_form = AssignmentForm(data=request.POST)
+        req_form = RequirementsForm(data=request.POST)
 
-        # If the two forms are valid...
-        if assign_form.is_valid():
-            # Save the user's form data to the database.
-            assign = assign_form.save()
+        # If the two forms are valid
+        if assign_form.is_valid() and req_form.is_valid():
+
+            requirements = req_form.save()
+            requirements.save()
+            assign = Assignment.objects.create(
+                name=assign_form.cleaned_data['name'],
+                instructor=assign_form.cleaned_data['instructor'],
+                course=assign_form.cleaned_data['course'],
+                deadline=assign_form.cleaned_data['deadline'],
+                requirements=requirements,
+            )
+            assign.save()
 
             try:
                 file = request.FILES['students']
@@ -173,26 +177,19 @@ def assignment_create(request):
             except:
                 print "invalid student number found"
 
-            # Update our variable to tell the template registration was successful.
-            registered = True
-
-        # Invalid form or forms - mistakes or something else?
-        # Print problems to the terminal.
-        # They'll also be shown to the user.
         else:
             print assign_form.errors
 
-    # Not a HTTP POST, so we render our form using two ModelForm instances.
-    # These forms will be blank, ready for user input.
     else:
         assign_form = AssignmentForm()
+        req_form = RequirementsForm()
 
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
 
     # Adds our results list to the template context under name pages.
     context_dict['assign_form'] = assign_form
-    context_dict['registered'] = registered
+    context_dict['req_form'] = req_form
 
     # Render the template depending on the context.
     return render(request, 'assignment_create.html', context_dict)
@@ -276,48 +273,6 @@ def team_create(request, assignment_id):
 
     # Render the template depending on the context.
     return render(request, 'team_create.html', context_dict)
-
-
-@login_required
-def requirements_create(request):
-    # A boolean value for telling the template whether the registration was successful.
-    # Set to False initially. Code changes value to True when registration succeeds.
-    registered = False
-
-    # If it's a HTTP POST, we're interested in processing form data.
-    if request.method == 'POST':
-        # Attempt to grab information from the raw form information.
-        # Note that we make use of both UserForm and UserProfileForm.
-        req_form = RequirementsForm(data=request.POST)
-
-        # If the two forms are valid...
-        if req_form.is_valid():
-            # Save the user's form data to the database.
-            assign = req_form.save()
-
-            # Update our variable to tell the template registration was successful.
-            registered = True
-
-        # Invalid form or forms - mistakes or something else?
-        # Print problems to the terminal.
-        # They'll also be shown to the user.
-        else:
-            print req_form.errors
-
-    # Not a HTTP POST, so we render our form using two ModelForm instances.
-    # These forms will be blank, ready for user input.
-    else:
-        req_form = RequirementsForm()
-
-    # Create a context dictionary which we can pass to the template rendering engine.
-    context_dict = {}
-
-    # Adds our results list to the template context under name pages.
-    context_dict['req_form'] = req_form
-    context_dict['registered'] = registered
-
-    # Render the template depending on the context.
-    return render(request, 'requirements_create.html', context_dict)
 
 
 @login_required
