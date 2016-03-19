@@ -13,6 +13,7 @@ import calendar
 from datetime import date
 from MyCalendar import MyCalendar
 from Matching import Matching
+from uta_auth.forms import *
 
 
 def index(request):
@@ -148,7 +149,6 @@ def instructor_home(request):
 
 @login_required
 def assignment_create(request):
-
     if request.method == 'POST':
         assign_form = AssignmentForm(data=request.POST)
         req_form = RequirementsForm(data=request.POST)
@@ -292,3 +292,81 @@ def getNoGroup(assignment):
             no_group.append(student)
 
     return no_group
+
+
+@login_required
+def studentprofile(request):
+
+    # Create a context dictionary which we can pass to the template rendering engine.
+    context_dict = {}
+    if request.user.is_authenticated():
+
+        # Construct a dictionary to pass to the template engine as its context.
+
+        user = request.user
+        if hasattr(request.user, 'student'):
+            profile = request.user.student
+
+            form = UserForm(initial={'username': user.username,
+                                     'first_name': user.first_name,
+                                     'last_name': user.last_name,
+                                     'email': user.email})
+            profile_form = StudentForm(initial={'matriculationNumber': profile.matriculationNumber,
+                                                'department': profile.department,
+                                                'lvlOfStudy': profile.lvlOfStudy})
+
+
+
+        # If it's a HTTP POST, we're interested in processing form data.
+        if request.method == 'POST':
+            # Attempt to grab information from the raw form information.
+            # Note that we make use of both UserForm and UserProfileForm.
+            user_form = UserForm(data=request.POST)
+            profile_form = StudentForm(data=request.POST)
+
+            # If the two forms are valid...
+            if user_form.is_valid() and profile_form.is_valid():
+                # Save the user's form data to the database.
+                user = user_form.save()
+
+                # Now we hash the password with the set_password method.
+                # Once hashed, we can update the user object.
+                user.set_password(user.password)
+                user.save()
+
+                # Now sort out the UserProfile instance.
+                # Since we need to set the user attribute ourselves, we set commit=False.
+                # This delays saving the model until we're ready to avoid integrity problems.
+                profile = profile_form.save(commit=False)
+                profile.user = user
+
+                # Did the user provide a profile picture?
+                # If so, we need to get it from the input form and put it in the UserProfile model.
+                # if 'picture' in request.FILES:
+                #   profile.picture = request.FILES['picture']
+
+                # Now we save the UserProfile model instance.
+                profile.save()
+
+
+
+            # Invalid form or forms - mistakes or something else?
+            # Print problems to the terminal.
+            # They'll also be shown to the user.
+            else:
+                print user_form.errors, profile_form.errors
+
+        # Not a HTTP POST, so we render our form using two ModelForm instances.
+        # These forms will be blank, ready for user input.
+        else:
+
+            user_form = UserForm()
+
+            # Adds our results list to the template context under name pages.
+            context_dict['user_form'] = form
+            context_dict['profile_form'] = profile_form
+
+
+
+        # Render the template depending on the context.
+    return render(request, 'uta_auth/student_profile.html', context_dict)

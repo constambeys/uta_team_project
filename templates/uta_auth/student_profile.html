@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block custom-style %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/register_user.css' %}"/>
+{% endblock %}
+
+{% block title %} User Registration {% endblock %}
+
+
+{% block navbar %}
+
+<div id="navbar" class="navbar-collapse collapse">
+
+</div><!--/.navbar-collapse -->
+
+{% endblock %}
+
+{% block body %}
+
+{% if registered %}
+<strong>Thank you for registering!</strong>
+<a href="{% url 'index' %}">Return to the homepage.</a><br/>
+{% else %}
+
+<div id="form1">
+    <form id="user_form" method="post" action="{% url 'register_user' user_type %}"
+          enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        {% for field in user_form %}
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+
+        {% endfor %}
+
+        {% for field in profile_form %}
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+        {% endfor %}
+
+        <!-- Provide a button to click to submit the form. -->
+        <input id="submit" type="submit" name="submit" value="Register"/>
+    </form>
+</div>
+{% endif %}
+
+{% endblock %}

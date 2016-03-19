@@ -3,14 +3,16 @@ from django.contrib import admin
 from uta_team_project import views
 
 urlpatterns = patterns('',
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^$', views.index, name='index'),
-    url(r'^home', views.home, name='home'),
-    url(r'^find_team/(?P<assignment_id>.*)/', views.find_team, name='find_team'),
-    url(r'^select_team/(?P<team_id>.*)/', views.select_team, name='select_team'),
-    url(r'^assignment_create/', views.assignment_create, name='assignment_create'),
-    url(r'^assignment_view/(?P<assignment_id>.*)/', views.assignment_view, name='assignment_view'),
-    url(r'^team_create/(?P<assignment_id>.*)/', views.team_create, name='team_create'),
-    url(r'^auth/', include('uta_auth.urls')),
-    url(r'^restricted/', views.restricted, name='restricted'),
-)
+                       url(r'^admin/', include(admin.site.urls)),
+                       url(r'^$', views.index, name='index'),
+                       url(r'^home', views.home, name='home'),
+                       url(r'^find_team/(?P<assignment_id>.*)/', views.find_team, name='find_team'),
+                       url(r'^select_team/(?P<team_id>.*)/', views.select_team, name='select_team'),
+                       url(r'^assignment_create/', views.assignment_create, name='assignment_create'),
+                       url(r'^assignment_view/(?P<assignment_id>.*)/', views.assignment_view, name='assignment_view'),
+                       url(r'^team_create/(?P<assignment_id>.*)/', views.team_create, name='team_create'),
+                       url(r'^auth/', include('uta_auth.urls')),
+                       url(r'^restricted/', views.restricted, name='restricted'),
+                       url(r'^studentprofile/', views.studentprofile, name='studentprofile'),
+                      # url(r'^instructorprofile/', views.instructorprofile, name='instructorprofile'),
+                       )
