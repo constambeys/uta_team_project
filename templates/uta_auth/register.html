@@ -3,57 +3,62 @@
 {% load static %}
 
 {% block custom-style %}
-<link rel="stylesheet" type="text/css" href="{% static 'styles/register.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/register.css' %}"/>
 {% endblock %}
 
 {% block title %} User Registration {% endblock %}
 
-{% block navbar_title %} - User Registration {% endblock %}
-
 {% block navbar %}
 
-<div id="navbar" class="navbar-collapse collapse">
+    <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right" style="padding-top:5px">
+            <li><h4 style="color: white;">User Registration</h4></li>
+        </ul>
 
-</div><!--/.navbar-collapse -->
+    </div><!--/.navbar-collapse -->
 
 {% endblock %}
 
 {% block body %}
-<div class="jumbotron">
-    <div class="container">
-    </div>
-</div>
+    <div class="jumbotron" style="padding: 0px">
+        <div class="container img-background" style="width:100%; margin: 0px;">
+            <div class="container fullscreen" style="padding-top:170px">
+                <div class="col-sm-4 col-sm-offset-2">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Student</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>A Student user can enroll to courses and see the available assignments. Also has the
+                                ability to
+                                create a team for an assignment or be suggested one based on the his/her
+                                qualifications.</p>
+
+                            <p><a class="btn btn-success" href="/auth/register/student" name="user_type"
+                                  value="student" role="button">Register &raquo;</a></p>
+                        </div>
+                    </div>
+                </div>
 
 
-<div id="content">
-<div  align="center" class="container fullscreen">
-    <div class="col-sm-4">
-        <div class="panel panel-success">
-            <div class="panel-heading">
-                <h3 class="panel-title">Student</h3>
-            </div>
-            <div class="panel-body">
-                <p>A Student user can enroll to courses and see the available assignments. Also has the ability to
-                    create a team for an assignment or be suggested one based on the his/her qualifications.</p>
-                <p><a class="btn btn-default" href="/auth/register/student" name="user_type" value="student" role="button">Register &raquo;</a></p>
+                <div class="col-sm-4">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Instructor</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>An Instructor user can create assignments for his/her courses and define requirements
+                                that the teams
+                                must fulfil, such as minimum and maximum team size, must-have skills etc.</p>
+
+                            <p><a class="btn btn-success" href="/auth/register/instructor" name="user_type"
+                                  value="instructor" role="button">Register &raquo;</a></p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
 
-
-    <div class="col-sm-4">
-        <div class="panel panel-success">
-            <div class="panel-heading">
-                <h3 class="panel-title">Instructor</h3>
-            </div>
-            <div class="panel-body">
-                <p>An Instructor user can create assignments for his/her courses and define requirements that the teams
-                    must fulfil, such as minimum and maximum team size, must-have skills etc.</p>
-                <p><a class="btn btn-default" href="/auth/register/instructor" name="user_type" value="instructor" role="button">Register &raquo;</a></p>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
 {% endblock %}
