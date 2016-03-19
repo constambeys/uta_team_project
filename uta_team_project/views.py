@@ -66,7 +66,7 @@ def find_team(request, assignment_id):
     print ranked_groups
 
     context_dict['ranked_groups'] = ranked_groups
-    if ranked_groups > 0:
+    if len(ranked_groups) > 0:
         context_dict['top_group'] = ranked_groups[0]
     context_dict['assignment'] = assignment
     return render(request, 'find_team.html', context_dict)
