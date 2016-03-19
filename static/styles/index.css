@@ -1,19 +1,19 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
-  padding-top: 50px;
-  padding-bottom: 20px;
+    padding-top: 50px;
+    padding-bottom: 20px;
 }
 
 div > img {
-  width: auto;
-  height : auto;
-  max-height: 100%;
-  max-width: 100%;
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    max-width: 100%;
 }
 
 .img-background {
-  background-image: url("/static/images/students-logo-img.png");
-  background-position: center;
-  background-size: cover;
-  height:850px;
+    background-image: url("/static/images/students-logo-img.png");
+    background-position: center;
+    background-size: cover;
+    height: 850px;
 }

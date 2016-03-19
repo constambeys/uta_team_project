@@ -3,84 +3,89 @@
 {% load static %}
 
 {% block custom-style %}
-<link rel="stylesheet" type="text/css" href="{% static 'styles/student_homepage.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/student_homepage.css' %}"/>
 {% endblock %}
 
 {% block title %} Student Homepage {% endblock %}
 
 {% block navbar %}
 
-<div id="navbar" class="navbar-collapse collapse">
-    <ul class="nav navbar-nav">
-        <li class="active"><a href="{% url 'home' %}">Home</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-        <li><a href="#profile">{{ username }}</a></li>
-        <li><a href="{% url 'logout' %}">Logout</a></li>
-    </ul>
-</div><!--/.navbar-collapse -->
+    <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href="{% url 'home' %}" style="margin-right: 40px">Home</a></li>
+            <li><a href="#profile">{{ username }}</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div><!--/.navbar-collapse -->
 
 {% endblock %}
 
 {% block body %}
-<div class="jumbotron">
-    <div class="container">
+    <div class="jumbotron" style="padding: 0px">
+        <div class="container img-background" style="width:100%; margin: 0px;">
+            <div class="container" style="padding-top: 280px">
+                <div id="content" class="container fullscreen">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">My Assignments</h3>
+                                </div>
+                                <div class="panel-body">
+                                    {% if assignments %}
+                                        <ul>
+                                            {% for assignment in assignments %}
+                                                <li>
+                                                    <a style="color: cadetblue"; href="{% url 'assignment_view' assignment.id %}">{{ assignment.course }}
+                                                        - {{ assignment.name }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <strong>There are no assignments present.</strong>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.col-sm-4 -->
+                        <div class="col-sm-4">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">My Teams</h3>
+                                </div>
+                                <div class="panel-body" style="color: cadetblue";>
+                                    {% if groups %}
+                                        <ul>
+                                            {% for group in groups %}
+                                                <!-- Following line changed to add an HTML hyperlink -->
+                                                <li>{{ group.assignment.course }} - {{ group.name }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <strong>There are no groups present.</strong>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- /.col-sm-4 -->
+                        <div class="col-sm-4">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Calendar</h3>
+                                </div>
+                                <div id="calendar_table" align="center" class="panel-body">
+                                    {{ calendar }}
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- /.col-sm-4 -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<div id="content" class="container fullscreen">
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="panel panel-success">
-                <div class="panel-heading">
-                    <h3 class="panel-title">My Assignments</h3>
-                </div>
-                <div class="panel-body">
-                    {% if assignments %}
-                    <ul>
-                        {% for assignment in assignments %}
-                        <li><a href="{% url 'assignment_view' assignment.id %}">{{ assignment.course }}
-                                        - {{ assignment.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    <strong>There are no assignments present.</strong>
-                    {% endif %}
-                </div>
-            </div>
-        </div><!-- /.col-sm-4 -->
-        <div class="col-sm-4">
-            <div class="panel panel-success">
-                <div class="panel-heading">
-                    <h3 class="panel-title">My Teams</h3>
-                </div>
-                <div class="panel-body">
-                    {% if groups %}
-                    <ul>
-                        {% for group in groups %}
-                        <!-- Following line changed to add an HTML hyperlink -->
-                        <li>{{ group.assignment.course}} - {{ group.name }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    <strong>There are no groups present.</strong>
-                    {% endif %}
-                </div>
-            </div>
 
-        </div><!-- /.col-sm-4 -->
-        <div class="col-sm-4">
-            <div class="panel panel-success">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Calendar</h3>
-                </div>
-                <div id="calendar_table" align="center" class="panel-body">
-                   {{ calendar }}
-                </div>
-            </div>
-
-        </div><!-- /.col-sm-4 -->
-    </div>
-</div>
 
 {% endblock %}

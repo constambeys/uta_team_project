@@ -13,11 +13,12 @@
     <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right">
             <li class="active"><a href="#">Home</a></li>
-            <li><a href="{% url 'assignment_create' %}">Create Assignment</a></li>
+            <li><a href="{% url 'assignment_create' %}" style="margin-right: 40px">Create Assignment</a></li>
             <li><a href="#profile">{{ username }}</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
-    </div><!--/.navbar-collapse -->
+    </div>
+
 
 {% endblock %}
 
@@ -25,59 +26,63 @@
     <div class="jumbotron" style="padding: 0px">
         <div class="container img-background" style="width:100%; margin: 0px;">
             <div class="container" style="padding-top: 280px">
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="panel panel-success">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">My Courses</h3>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">My Courses</h3>
+                            </div>
+                            <div class="panel-body" style="color: cadetblue";>
+                                {% if courses %}
+                                    <ul>
+                                        {% for course in courses %}
+                                            <li>{{ course.name }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <strong>There are no courses present.</strong>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                    <div class="panel-body">
-                        {% if courses %}
-                            <ul>
-                                {% for course in courses %}
-                                    <li>{{ course.name }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <strong>There are no courses present.</strong>
-                        {% endif %}
-                    </div>
-                </div>
-            </div><!-- /.col-sm-4 -->
-            <div class="col-sm-4">
-                <div class="panel panel-success">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">My Assignments</h3>
-                    </div>
-                    <div class="panel-body">
-                        {% if assignments %}
-                            <ul>
-                                {% for assignment in assignments %}
-                                    <li><a href="{% url 'assignment_view' assignment.id %}">{{ assignment.course }}
-                                        - {{ assignment.name }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <strong>There are no assignments present.</strong>
-                        {% endif %}
-                    </div>
-                </div>
+                    <!-- /.col-sm-4 -->
+                    <div class="col-sm-4">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">My Assignments</h3>
+                            </div>
+                            <div class="panel-body">
+                                {% if assignments %}
+                                    <ul>
+                                        {% for assignment in assignments %}
+                                            <li>
+                                                <a style="color: cadetblue"; href="{% url 'assignment_view' assignment.id %}">{{ assignment.course }}
+                                                    - {{ assignment.name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <strong>There are no assignments present.</strong>
+                                {% endif %}
+                            </div>
+                        </div>
 
-            </div><!-- /.col-sm-4 -->
-            <div class="col-sm-4">
-                <div class="panel panel-success">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Calendar</h3>
                     </div>
-                    <div id="calendar_table" align="center" class="panel-body">
-                        {{ calendar }}
-                    </div>
-                </div>
+                    <!-- /.col-sm-4 -->
+                    <div class="col-sm-4">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Calendar</h3>
+                            </div>
+                            <div id="calendar_table" align="center" class="panel-body">
+                                {{ calendar }}
+                            </div>
+                        </div>
 
-            </div><!-- /.col-sm-4 -->
-        </div>
-    </div>
+                    </div>
+                    <!-- /.col-sm-4 -->
+                </div>
+            </div>
         </div>
     </div>
 
