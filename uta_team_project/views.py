@@ -344,3 +344,14 @@ def getNoGroup(assignment):
             no_group.append(student)
 
     return no_group
+
+def about_us(request):
+    return render (request, 'about-us.html', {})
+
+def uta_users(request):
+    return render (request, 'uta_users.html', {})
+
+def help(request):
+    return render(request, 'help.html', {})
+
+
