@@ -34,6 +34,24 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <script>
+        var previousColor = "blue";
+        function bigImg(x) {
+            var x = document.getElementById(x).getElementsByTagName('a')[0];
+            if (x) {
+                previousColor = x.style.color;
+                x.style.color = "red";
+            }
+        }
+
+        function normalImg(x) {
+            var x = document.getElementById(x).getElementsByTagName('a')[0];
+            if (x) {
+                x.style.color = previousColor;
+            }
+        }
+    </script>
+
     <link rel="stylesheet" type="text/css" href="{% static 'styles/base.css' %}"/>
     {% block custom-style %}
 

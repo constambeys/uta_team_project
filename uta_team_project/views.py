@@ -102,15 +102,13 @@ def student_home(request):
         context_dict['groups'] = Group.objects.filter(students__user=user)
 
         profile = request.user.student
-        deadlines = []
-        for a in profile.assignment_set.all():
-            deadlines.append(a.deadline.date())
+        assignments = profile.assignment_set.all()
 
         context_dict['username'] = user.username
         context_dict['assignments'] = Assignment.objects.filter(students__user=user)
         context_dict['groups'] = Group.objects.filter(students__user=user)
 
-        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, deadlines=deadlines).formatmonth(date.today().year,
+        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, assignments=assignments).formatmonth(date.today().year,
                                                                                             date.today().month)
         context_dict['calendar'] = mark_safe(htmlStr)
 
@@ -128,16 +126,16 @@ def instructor_home(request):
         profile = request.user.instructor
         courses = []
         deadlines = []
-        for a in profile.assignment_set.all():
-            deadlines.append(a.deadline.date())
+        assignments = profile.assignment_set.all()
+        for a in assignments:
             if a.course not in courses:
                 courses.append(a.course)
 
         context_dict['username'] = user.username
         context_dict['courses'] = courses
-        context_dict['assignments'] = profile.assignment_set.all()
+        context_dict['assignments'] = assignments
 
-        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, deadlines=deadlines).formatmonth(date.today().year,
+        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, assignments=assignments).formatmonth(date.today().year,
                                                                                             date.today().month)
         context_dict['calendar'] = mark_safe(htmlStr)
 
@@ -148,7 +146,6 @@ def instructor_home(request):
 
 @login_required
 def assignment_create(request):
-
     if request.method == 'POST':
         assign_form = AssignmentForm(data=request.POST)
         req_form = RequirementsForm(data=request.POST)
@@ -254,6 +251,7 @@ def team_create(request, assignment_id):
 
             # Update our variable to tell the template registration was successful.
             registered = True
+            return HttpResponseRedirect(reverse('assignment_view', args=[assignment_id]))
 
         # Invalid form or forms - mistakes or something else?
         # Print problems to the terminal.
