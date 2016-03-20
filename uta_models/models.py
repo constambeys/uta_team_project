@@ -95,3 +95,10 @@ class Group(models.Model):
 
     def __unicode__(self):
         return "Group: " + self.name
+
+class Notification(models.Model):
+    group = models.OneToOneField(Group)
+    accepted = models.ManyToManyField(Student)
+
+    def __unicode__(self):
+        return "Notification: " + self.group.name
