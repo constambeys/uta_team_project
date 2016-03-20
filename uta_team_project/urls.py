@@ -13,4 +13,7 @@ urlpatterns = patterns('',
     url(r'^team_create/(?P<assignment_id>.*)/', views.team_create, name='team_create'),
     url(r'^auth/', include('uta_auth.urls')),
     url(r'^restricted/', views.restricted, name='restricted'),
+    url(r'^about-us/', views.about_us, name='about-us'),
+    url(r'^uta_users/', views.uta_users, name='uta_users'),
+    url(r'^help/', views.help, name='help'),
 )
