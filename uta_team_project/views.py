@@ -159,20 +159,14 @@ def parse(rated_qualifs):
                 rating = int(words[1])
 
                 if 1 <= rating <= 4:
-                    print "her"
-                    qualification = Qualification.objects.get_or_create(name=qualif)
-
-                    print "here"
-                    list.append(RatedQualification.objects.get_or_create(qualification=qualification, rating=rating))
+                    qualification = Qualification.objects.get_or_create(name=qualif)[0]
+                    list.append(RatedQualification.objects.get_or_create(qualification=qualification, rating=rating)[0])
                 else:
-                    print "a"
                     return -1
             except Exception, e:
-                print "ab"
                 print e
                 return -1
         else:
-            print "abc"
             return -1
 
     return list
@@ -181,41 +175,49 @@ def parse(rated_qualifs):
 @login_required
 def assignment_create(request):
     if request.method == 'POST':
-        assign_form = AssignmentForm(data=request.POST)
-        req_form = RequirementsForm(data=request.POST)
-        rated_qualif_form = RatedQualificationForm(data=request.POST)
+        if request.user.is_authenticated():
 
-        # If the two forms are valid
-        if assign_form.is_valid() and req_form.is_valid() and rated_qualif_form.is_valid():
+            profile = request.user.instructor
+           
+            assign_form = AssignmentForm(data=request.POST)
+            req_form = RequirementsForm(data=request.POST)
+            rated_qualif_form = RatedQualificationForm(data=request.POST)
 
-            rated_qualifs = rated_qualif_form.cleaned_data['rated_qualifications']
-            rated_qualifs = parse(rated_qualifs)
-            print rated_qualifs
+            # If the two forms are valid
+            if assign_form.is_valid() and req_form.is_valid() and rated_qualif_form.is_valid():
 
-            # requirements = req_form.save()
-            # requirements.save()
-            # assign = Assignment.objects.create(
-            #     name=assign_form.cleaned_data['name'],
-            #     instructor=assign_form.cleaned_data['instructor'],
-            #     course=assign_form.cleaned_data['course'],
-            #     deadline=assign_form.cleaned_data['deadline'],
-            #     requirements=requirements,
-            # )
-            # assign.save()
-            #
-            # try:
-            #     file = request.FILES['students']
-            #     for line in file:
-            #         id = line.rstrip('\r').rstrip('\n')
-            #         s = Student.objects.get(matriculationNumber=id)
-            #         assign.students.add(s)
-            #     assign.save()
-            # except:
-            #     print "invalid student number found"
+                # Requirements
+                min_group_size = req_form.cleaned_data['min_group_size']
+                max_group_size = req_form.cleaned_data['max_group_size']
+                requirements = Requirement.objects.create(min_group_size=min_group_size, max_group_size=max_group_size)
+                requirements.save()
+                rated_qualifs = rated_qualif_form.cleaned_data['rated_qualifications']
+                rated_qualifs = parse(rated_qualifs)
+                [requirements.rated_qualifications.add(rq) for rq in rated_qualifs]
+                requirements.save()
 
-        else:
-            print assign_form.errors
+                # Assignments
+                assign = Assignment.objects.create(
+                    name=assign_form.cleaned_data['name'],
+                    instructor=profile,
+                    course=assign_form.cleaned_data['course'],
+                    deadline=assign_form.cleaned_data['deadline'],
+                    requirements=requirements,
+                )
+                assign.save()
 
+                try:
+                    file = request.FILES['students']
+                    for line in file:
+                        id = line.rstrip('\r').rstrip('\n')
+                        s = Student.objects.get(matriculationNumber=id)
+                        assign.students.add(s)
+                    assign.save()
+                except:
+                    print "invalid student number found"
+
+            else:
+                print assign_form.errors
     else:
         assign_form = AssignmentForm()
         req_form = RequirementsForm()
