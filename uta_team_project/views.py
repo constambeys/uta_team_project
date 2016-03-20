@@ -3,12 +3,9 @@ from django.contrib.auth import *
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from uta_models.models import *
 from forms import *
 from uta_models.models import Student
-from django.shortcuts import render_to_response
 from django.utils.safestring import mark_safe
-from calendar import HTMLCalendar
 import calendar
 from datetime import date
 from MyCalendar import MyCalendar
@@ -53,17 +50,21 @@ def home(request):
 
 @login_required
 def find_team(request, assignment_id):
+    student = request.user.student
+    my_group = student.group_set.filter(assignment_id=assignment_id)
+    if my_group.count() != 0:
+        return HttpResponse("Sorry you are already in a group")
+
     context_dict = {}
     # The assignment that the user has selected
     assignment = Assignment.objects.get(id=assignment_id)
     requirements = assignment.requirements
     groups = Group.objects.filter(assignment__name=assignment.name)
 
-    groups_benefits = Matching(groups, requirements, request.user.student).rank()
-
+    groups_benefits = Matching(groups, requirements, student).rank()
     ranked_groups = [g for (g, b) in groups_benefits]
 
-    print ranked_groups
+    # print ranked_groups
 
     context_dict['ranked_groups'] = ranked_groups
     if len(ranked_groups) > 0:
@@ -102,16 +103,14 @@ def student_home(request):
         context_dict['groups'] = Group.objects.filter(students__user=user)
 
         profile = request.user.student
-        deadlines = []
-        for a in profile.assignment_set.all():
-            deadlines.append(a.deadline.date())
+        assignments = profile.assignment_set.all()
 
         context_dict['username'] = user.username
         context_dict['assignments'] = Assignment.objects.filter(students__user=user)
         context_dict['groups'] = Group.objects.filter(students__user=user)
 
-        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, deadlines=deadlines).formatmonth(date.today().year,
-                                                                                            date.today().month)
+        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, assignments=assignments).formatmonth(date.today().year,
+                                                                                                date.today().month)
         context_dict['calendar'] = mark_safe(htmlStr)
 
         return render(request, 'student_home.html', context_dict)
@@ -128,17 +127,17 @@ def instructor_home(request):
         profile = request.user.instructor
         courses = []
         deadlines = []
-        for a in profile.assignment_set.all():
-            deadlines.append(a.deadline.date())
+        assignments = profile.assignment_set.all()
+        for a in assignments:
             if a.course not in courses:
                 courses.append(a.course)
 
         context_dict['username'] = user.username
         context_dict['courses'] = courses
-        context_dict['assignments'] = profile.assignment_set.all()
+        context_dict['assignments'] = assignments
 
-        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, deadlines=deadlines).formatmonth(date.today().year,
-                                                                                            date.today().month)
+        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, assignments=assignments).formatmonth(date.today().year,
+                                                                                                date.today().month)
         context_dict['calendar'] = mark_safe(htmlStr)
 
         return render(request, 'instructor_home.html', context_dict)
@@ -148,7 +147,6 @@ def instructor_home(request):
 
 @login_required
 def assignment_create(request):
-
     if request.method == 'POST':
         assign_form = AssignmentForm(data=request.POST)
         req_form = RequirementsForm(data=request.POST)
@@ -222,7 +220,7 @@ def assignment_view(request, assignment_id):
 
         context_dict['assignment'] = assignment
         context_dict['groups'] = groups
-        context_dict['no_group'] = assignment.students.filter(group=None)
+        context_dict['no_group'] = getNoGroup(assignment)
         return render(request, 'assignment_view.html', context_dict)
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
@@ -239,7 +237,8 @@ def team_create(request, assignment_id):
     if request.method == 'POST':
         # Attempt to grab information from the raw form information.
         # Note that we make use of both UserForm and UserProfileForm.
-        group_form = GroupForm(data=request.POST, limit=limit, students=assignment.students.filter(group=None))
+        qs = getNoGroupQS(assignment)
+        group_form = GroupForm(data=request.POST, limit=limit, students_qs=qs)
 
         # If the two forms are valid...
         if group_form.is_valid():
@@ -254,6 +253,7 @@ def team_create(request, assignment_id):
 
             # Update our variable to tell the template registration was successful.
             registered = True
+            return HttpResponseRedirect(reverse('assignment_view', args=[assignment_id]))
 
         # Invalid form or forms - mistakes or something else?
         # Print problems to the terminal.
@@ -264,7 +264,8 @@ def team_create(request, assignment_id):
     # Not a HTTP POST, so we render our form using two ModelForm instances.
     # These forms will be blank, ready for user input.
     else:
-        group_form = GroupForm(limit=limit, students=assignment.students.filter(group=None))
+        qs = getNoGroupQS(assignment)
+        group_form = GroupForm(limit=limit, students_qs=qs)
 
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
@@ -282,6 +283,17 @@ def team_create(request, assignment_id):
 @login_required
 def restricted(request):
     return HttpResponse("Since you're logged in, you can see this text!")
+
+
+def getNoGroupQS(assignment):
+    queryset_all = Student.objects.all()
+    included_pks = []
+    for student in assignment.students.all():
+        group = student.group_set.filter(assignment_id=assignment.id)
+        if group.count() == 0:
+            included_pks.append(student.pk)
+    queryset = queryset_all.filter(pk__in=included_pks)
+    return queryset
 
 
 def getNoGroup(assignment):

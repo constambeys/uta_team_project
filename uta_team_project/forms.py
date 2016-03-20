@@ -10,9 +10,9 @@ class AssignmentForm(forms.ModelForm):
 
 
 class GroupForm(forms.ModelForm):
-    def __init__(self, students, limit, data=None):
+    def __init__(self, students_qs, limit, data=None):
         super(forms.ModelForm, self).__init__(data)
-        self.fields['students'].queryset = students
+        self.fields['students'].queryset = students_qs
         self.limit = limit
 
     def clean_students(self):

@@ -55,7 +55,7 @@
                                 {% if assignments %}
                                     <ul>
                                         {% for assignment in assignments %}
-                                            <li>
+                                            <li id="{{ assignment.id }}">
                                                 <a style="color: cadetblue" href="{% url 'assignment_view' assignment.id %}">{{ assignment.course }}
                                                     - {{ assignment.name }}</a>
                                             </li>

@@ -9,23 +9,27 @@ class MyCalendar(HTMLCalendar):
     color_today = "#0078D7"
     color_deadline = "#ffaddf"
 
-    html = "<table border=\"0\" cellpadding=\"4\" cellspacing=\"0\">"
+    html = "<table onmouseover=\"bigImg({2})\" onmouseout=\"normalImg({2})\" border=\"0\" cellpadding=\"4\" cellspacing=\"0\">"
     html = html + "<tr><td bgcolor=\"{0}\">{1}</td>"
     html = html + "</tr></table>"
 
-    def __init__(self, firstweekday, deadlines):
+    def __init__(self, firstweekday, assignments):
         super(MyCalendar, self).__init__()
-        self.deadlines = deadlines
+        self.assignments = assignments
+        self.deadlines = []
+        for a in assignments:
+            self.deadlines.append(a.deadline.date())
 
     def formatday(self, day, weekday):
         if day != 0:
             cssclass = self.cssclasses[weekday]
             if date.today() == date(self.year, self.month, day):
                 cssclass += ' today'
-                body = self.html.format(self.color_today, day)
+                body = self.html.format(self.color_today, day, 0)
                 return self.day_cell(cssclass, body)
             if date(self.year, self.month, day) in self.deadlines:
-                body = self.html.format(self.color_deadline, day)
+                index = self.deadlines.index(date(self.year, self.month, day))
+                body = self.html.format(self.color_deadline, day, self.assignments[index].id)
                 return self.day_cell(cssclass, body)
             return self.day_cell(cssclass, day)
         return self.day_cell('noday', '&nbsp;')
