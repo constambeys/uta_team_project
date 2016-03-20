@@ -77,6 +77,15 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='Notification',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Qualification',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -122,6 +131,18 @@ class Migration(migrations.Migration):
             options={
             },
             bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='notification',
+            name='accepted',
+            field=models.ManyToManyField(to='uta_models.Student'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='notification',
+            name='group',
+            field=models.OneToOneField(to='uta_models.Group'),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='group',

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% for group in not_accepted %}
+    <h3>    {{ group.name }}</h3>
+    <a href="{% url 'notification_accept' group.id %}">Accept</a>
+{% endfor %}
+
+</body>
+</html>
