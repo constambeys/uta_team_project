@@ -3,13 +3,9 @@ from django.contrib.auth import *
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from uta_models.models import *
 from forms import *
 from uta_models.models import Student
-from itertools import chain
-from django.shortcuts import render_to_response
 from django.utils.safestring import mark_safe
-from calendar import HTMLCalendar
 import calendar
 from datetime import date
 from MyCalendar import MyCalendar
@@ -54,17 +50,21 @@ def home(request):
 
 @login_required
 def find_team(request, assignment_id):
+    student = request.user.student
+    my_group = student.group_set.filter(assignment_id=assignment_id)
+    if my_group.count() != 0:
+        return HttpResponse("Sory you are already in a group")
+
     context_dict = {}
     # The assignment that the user has selected
     assignment = Assignment.objects.get(id=assignment_id)
     requirements = assignment.requirements
     groups = Group.objects.filter(assignment__name=assignment.name)
 
-    groups_benefits = Matching(groups, requirements, request.user.student).rank()
-
+    groups_benefits = Matching(groups, requirements, student).rank()
     ranked_groups = [g for (g, b) in groups_benefits]
 
-    print ranked_groups
+    # print ranked_groups
 
     context_dict['ranked_groups'] = ranked_groups
     if len(ranked_groups) > 0:
