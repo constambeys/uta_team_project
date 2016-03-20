@@ -6,7 +6,7 @@ from uta_models.models import *
 class AssignmentForm(forms.ModelForm):
     class Meta:
         model = Assignment
-        fields = ('name', 'instructor', 'course', 'deadline')
+        fields = ('name', 'course', 'deadline')
 
 
 class GroupForm(forms.ModelForm):
@@ -29,8 +29,15 @@ class GroupForm(forms.ModelForm):
 class RequirementsForm(forms.ModelForm):
     class Meta:
         model = Requirement
-        fields = ('rated_qualifications', 'min_group_size', 'max_group_size')
+        fields = ('min_group_size', 'max_group_size')
 
 
 class CourseAssignmentForm(forms.Form):
     course_assignment = forms.ModelChoiceField(queryset=Assignment.objects.all().order_by('name'))
+
+
+class RatedQualificationForm(forms.Form):
+    rated_qualifications = forms.CharField(widget=forms.Textarea)
+
+
+

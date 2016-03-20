@@ -29,14 +29,6 @@
                 <div class="row col-sm-8 col-sm-offset-2 form-background">
                     <form id="assign_form" method="post" action="{% url 'assignment_create' %}"
                           enctype="multipart/form-data">
-                        <div class="col-sm-6">
-                            {% csrf_token %}
-                            {% for field in req_form %}
-                                {{ field.errors }}
-                                {{ field.label_tag }} <br/> {{ field }}
-                                <br/>
-                            {% endfor %}
-                        </div>
 
                         <div class="col-sm-6">
                             {% csrf_token %}
@@ -49,6 +41,24 @@
                             <input type="file" name="students" accept="*">
                             <!-- Provide a button to click to submit the form. -->
                             <input id="submit" class="btn btn-success" type="submit" name="submit" value="Create"/>
+                        </div>
+
+                        <div class="col-sm-6">
+                            {% csrf_token %}
+                            {% for field in req_form %}
+                                {{ field.errors }}
+                                {{ field.label_tag }} <br/> {{ field }}
+                                <br/>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-sm-6">
+                            {% csrf_token %}
+                            {% for field in rated_qualif_form %}
+                                {{ field.errors }}
+                                {{ field.label_tag }} <br/> {{ field }}
+                                <br/>
+                            {% endfor %}
                         </div>
                     </form>
 

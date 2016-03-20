@@ -145,35 +145,73 @@ def instructor_home(request):
         return HttpResponse("Since you're logged in, you can see this text!")
 
 
+def parse(rated_qualifs):
+    lines = rated_qualifs.splitlines()
+
+    list = []
+
+    for line in lines:
+        words = line.split()
+
+        if len(words) == 2:
+            try:
+                qualif = str(words[0])
+                rating = int(words[1])
+
+                if 1 <= rating <= 4:
+                    print "her"
+                    qualification = Qualification.objects.get_or_create(name=qualif)
+
+                    print "here"
+                    list.append(RatedQualification.objects.get_or_create(qualification=qualification, rating=rating))
+                else:
+                    print "a"
+                    return -1
+            except Exception, e:
+                print "ab"
+                print e
+                return -1
+        else:
+            print "abc"
+            return -1
+
+    return list
+
+
 @login_required
 def assignment_create(request):
     if request.method == 'POST':
         assign_form = AssignmentForm(data=request.POST)
         req_form = RequirementsForm(data=request.POST)
+        rated_qualif_form = RatedQualificationForm(data=request.POST)
 
         # If the two forms are valid
-        if assign_form.is_valid() and req_form.is_valid():
+        if assign_form.is_valid() and req_form.is_valid() and rated_qualif_form.is_valid():
 
-            requirements = req_form.save()
-            requirements.save()
-            assign = Assignment.objects.create(
-                name=assign_form.cleaned_data['name'],
-                instructor=assign_form.cleaned_data['instructor'],
-                course=assign_form.cleaned_data['course'],
-                deadline=assign_form.cleaned_data['deadline'],
-                requirements=requirements,
-            )
-            assign.save()
+            rated_qualifs = rated_qualif_form.cleaned_data['rated_qualifications']
+            rated_qualifs = parse(rated_qualifs)
+            print rated_qualifs
 
-            try:
-                file = request.FILES['students']
-                for line in file:
-                    id = line.rstrip('\r').rstrip('\n')
-                    s = Student.objects.get(matriculationNumber=id)
-                    assign.students.add(s)
-                assign.save()
-            except:
-                print "invalid student number found"
+            # requirements = req_form.save()
+            # requirements.save()
+            # assign = Assignment.objects.create(
+            #     name=assign_form.cleaned_data['name'],
+            #     instructor=assign_form.cleaned_data['instructor'],
+            #     course=assign_form.cleaned_data['course'],
+            #     deadline=assign_form.cleaned_data['deadline'],
+            #     requirements=requirements,
+            # )
+            # assign.save()
+            #
+            # try:
+            #     file = request.FILES['students']
+            #     for line in file:
+            #         id = line.rstrip('\r').rstrip('\n')
+            #         s = Student.objects.get(matriculationNumber=id)
+            #         assign.students.add(s)
+            #     assign.save()
+            # except:
+            #     print "invalid student number found"
 
         else:
             print assign_form.errors
@@ -181,6 +219,7 @@ def assignment_create(request):
     else:
         assign_form = AssignmentForm()
         req_form = RequirementsForm()
+        rated_qualif_form = RatedQualificationForm()
 
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
@@ -188,6 +227,7 @@ def assignment_create(request):
     # Adds our results list to the template context under name pages.
     context_dict['assign_form'] = assign_form
     context_dict['req_form'] = req_form
+    context_dict['rated_qualif_form'] = rated_qualif_form
 
     # Render the template depending on the context.
     return render(request, 'assignment_create.html', context_dict)
