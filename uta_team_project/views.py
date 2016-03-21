@@ -333,6 +333,76 @@ def team_create(request, assignment_id):
 
 
 @login_required
+def notifications_view(request):
+    # ------------------------------use populate.py script--------------------------
+    if request.user.is_authenticated():
+
+        # Construct a dictionary to pass to the template engine as its context.
+        context_dict = {}
+        user = request.user
+
+        if hasattr(request.user, 'student'):
+            student = request.user.student
+            user_type = "student"
+        else:
+            logout(request)  # Clear store session
+            return HttpResponse("Oops something went wrong!!")
+
+        # Return a rendered response to send to the client.
+
+        not_accepted = []
+        groups = Group.objects.filter(students__in=[student])
+        for group in groups:
+            if hasattr(group, 'notification'):
+                result = group.notification.accepted.filter(id=student.id)
+                if not (student in result):
+                    not_accepted.append(group)
+            else:
+                not_accepted.append(group)
+
+        context_dict['not_accepted'] = not_accepted
+        return render(request, 'notifications.html', context_dict)
+    else:
+        return HttpResponse("Since you're logged in, you can see this text!")
+
+
+@login_required
+def notification_accept(request, group_id):
+    # ------------------------------use populate.py script--------------------------
+    if request.user.is_authenticated():
+
+        # Construct a dictionary to pass to the template engine as its context.
+        context_dict = {}
+        user = request.user
+
+        if hasattr(request.user, 'student'):
+            student = request.user.student
+            user_type = "student"
+        else:
+            logout(request)  # Clear store session
+            return HttpResponse("Oops something went wrong!!")
+
+        # Return a rendered response to send to the client.
+
+        group = Group.objects.get(id=group_id)
+        if not hasattr(group, 'notification'):
+            notif = Notification.objects.create(
+                group=group,
+            )
+            notif.save()
+
+        result = group.notification.accepted.filter(id=student.id)
+        if not (student in result):
+            group.notification.accepted.add(student)
+            group.notification.save()
+
+        return HttpResponse("Success")
+
+    else:
+        return HttpResponse("Since you're logged in, you can see this text!")
+
+
+@login_required
 def restricted(request):
     return HttpResponse("Since you're logged in, you can see this text!")
 
@@ -357,13 +427,14 @@ def getNoGroup(assignment):
 
     return no_group
 
+
 def about_us(request):
-    return render (request, 'about-us.html', {})
+    return render(request, 'about-us.html', {})
+
 
 def uta_users(request):
-    return render (request, 'uta_users.html', {})
+    return render(request, 'uta_users.html', {})
+
 
 def help(request):
     return render(request, 'help.html', {})
-
-
