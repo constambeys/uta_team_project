@@ -1,3 +1,17 @@
+.form-background {
+    border-radius: 5px;
+    background-color: rgba(215, 215, 215, 0.9);
+    padding: 40px;
+}
+
+
+.img-background {
+    background-image: url("/static/images/lecturer-theatre.png");
+    background-position: center;
+    background-size: cover;
+    height: 850px;
+}
+
 input {
     width: 100%;
     padding: 12px 20px;
@@ -8,14 +22,14 @@ input {
     box-sizing: border-box;
 }
 
-/*input[type=submit]:hover {*/
-/*background-color: #45a049;*/
-/*}*/
-
-.form-background {
-    border-radius: 5px;
-    background-color: rgba(215, 215, 215, 0.9);
-    padding: 40px;
+.rated_qualif {
+width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
 div > img {
@@ -25,9 +39,3 @@ div > img {
     max-width: 100%;
 }
 
-.img-background {
-    background-image: url("/static/images/lecturer-theatre.png");
-    background-position: center;
-    background-size: cover;
-    height: 750px;
-}

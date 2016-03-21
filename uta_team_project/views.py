@@ -145,42 +145,92 @@ def instructor_home(request):
         return HttpResponse("Since you're logged in, you can see this text!")
 
 
+def parse(rated_qualifs):
+    lines = rated_qualifs.splitlines()
+
+    list = []
+
+    for line in lines:
+        words = line.split()
+
+        if len(words) == 2:
+            try:
+                qualif = str(words[0])
+                rating = int(words[1])
+
+                if 1 <= rating <= 4:
+                    qualification = Qualification.objects.get_or_create(name=qualif)[0]
+                    list.append(RatedQualification.objects.get_or_create(qualification=qualification, rating=rating)[0])
+                else:
+                    return -1
+            except Exception, e:
+                print e
+                return -1
+        else:
+            return -1
+
+    return list
+
+
 @login_required
 def assignment_create(request):
     if request.method == 'POST':
-        assign_form = AssignmentForm(data=request.POST)
-        req_form = RequirementsForm(data=request.POST)
+        if request.user.is_authenticated():
 
-        # If the two forms are valid
-        if assign_form.is_valid() and req_form.is_valid():
+            profile = request.user.instructor
 
-            requirements = req_form.save()
-            requirements.save()
-            assign = Assignment.objects.create(
-                name=assign_form.cleaned_data['name'],
-                instructor=assign_form.cleaned_data['instructor'],
-                course=assign_form.cleaned_data['course'],
-                deadline=assign_form.cleaned_data['deadline'],
-                requirements=requirements,
-            )
-            assign.save()
+            assign_form = AssignmentForm(data=request.POST)
+            req_form = RequirementsForm(data=request.POST)
+            rated_qualif_form = RatedQualificationForm(data=request.POST)
+            datetime_form = DateTimeFieldForm(data=request.POST)
 
-            try:
-                file = request.FILES['students']
-                for line in file:
-                    id = line.rstrip('\r').rstrip('\n')
-                    s = Student.objects.get(matriculationNumber=id)
-                    assign.students.add(s)
+            # If the two forms are valid
+            if assign_form.is_valid() and \
+                    req_form.is_valid() and \
+                    rated_qualif_form.is_valid() and \
+                    datetime_form.is_valid():
+
+                # Requirements
+                min_group_size = req_form.cleaned_data['min_group_size']
+                max_group_size = req_form.cleaned_data['max_group_size']
+                requirements = Requirement.objects.create(min_group_size=min_group_size, max_group_size=max_group_size)
+                requirements.save()
+                rated_qualifs = rated_qualif_form.cleaned_data['rated_qualifications']
+                rated_qualifs = parse(rated_qualifs)
+                [requirements.rated_qualifications.add(rq) for rq in rated_qualifs]
+                requirements.save()
+
+                # Deadline
+                datetime = datetime_form.cleaned_data['deadline']
+                print datetime
+
+                # Assignments
+                assign = Assignment.objects.create(
+                    name=assign_form.cleaned_data['name'],
+                    instructor=profile,
+                    course=assign_form.cleaned_data['course'],
+                    deadline=datetime,
+                    requirements=requirements,
+                )
                 assign.save()
-            except:
-                print "invalid student number found"
 
-        else:
-            print assign_form.errors
+                try:
+                    file = request.FILES['students']
+                    for line in file:
+                        id = line.rstrip('\r').rstrip('\n')
+                        s = Student.objects.get(matriculationNumber=id)
+                        assign.students.add(s)
+                    assign.save()
+                except:
+                    print "invalid student number found"
 
+            else:
+                print assign_form.errors
     else:
         assign_form = AssignmentForm()
         req_form = RequirementsForm()
+        rated_qualif_form = RatedQualificationForm()
+        datetime_form = DateTimeFieldForm()
 
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
@@ -188,6 +238,8 @@ def assignment_create(request):
     # Adds our results list to the template context under name pages.
     context_dict['assign_form'] = assign_form
     context_dict['req_form'] = req_form
+    context_dict['rated_qualif_form'] = rated_qualif_form
+    context_dict['datetime_form'] = datetime_form
 
     # Render the template depending on the context.
     return render(request, 'assignment_create.html', context_dict)
@@ -330,25 +382,49 @@ def notification_accept(request, group_id):
             logout(request)  # Clear store session
             return HttpResponse("Oops something went wrong!!")
 
-        # Return a rendered response to send to the client.
+        try:
+            group = Group.objects.get(id=group_id)
+            if not hasattr(group, 'notification'):
+                notif = Notification.objects.create(
+                    group=group,
+                )
+                notif.save()
 
-        group = Group.objects.get(id=group_id)
-        if not hasattr(group, 'notification'):
-            notif = Notification.objects.create(
-                group=group,
-            )
-            notif.save()
+            result = group.notification.accepted.filter(id=student.id)
+            if not (student in result):
+                group.notification.accepted.add(student)
+                group.notification.save()
 
-        result = group.notification.accepted.filter(id=student.id)
-        if not (student in result):
-            group.notification.accepted.add(student)
-            group.notification.save()
-
-        return HttpResponse("Success")
-
+            return HttpResponse("Success")
+        except:
+            return HttpResponse("Fail")
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
 
+@login_required
+def notification_reject(request, group_id):
+    # ------------------------------use populate.py script--------------------------
+    if request.user.is_authenticated():
+
+        # Construct a dictionary to pass to the template engine as its context.
+        context_dict = {}
+        user = request.user
+
+        if hasattr(request.user, 'student'):
+            student = request.user.student
+            user_type = "student"
+        else:
+            logout(request)  # Clear store session
+            return HttpResponse("Oops something went wrong!!")
+
+        try:
+            group = Group.objects.get(id=group_id)
+            group.delete()
+            return HttpResponse("Success")
+        except:
+            return HttpResponse("Fail")
+    else:
+        return HttpResponse("Since you're logged in, you can see this text!")
 
 @login_required
 def restricted(request):

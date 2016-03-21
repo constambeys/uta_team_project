@@ -48,8 +48,8 @@ class RatedQualification(models.Model):
 
 
 class Requirement(models.Model):
-    min_group_size = models.IntegerField(default=1)
-    max_group_size = models.IntegerField(default=2)
+    min_group_size = models.IntegerField(default=1, validators=[MinValueValidator(1)])
+    max_group_size = models.IntegerField(default=2, validators=[MaxValueValidator(4)])
     rated_qualifications = models.ManyToManyField(RatedQualification)
 
     def __unicode__(self):
