@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% for group in not_accepted %}
-    <h3>    {{ group.name }}</h3>
-    <a href="{% url 'notification_accept' group.id %}">Accept</a>
-{% endfor %}
+{% if not_accepted %}
+    {% for group in not_accepted %}
+        <li> {{ group.name }}
+            <a onclick='accept({{ group.id }})' href="#">Accept</a>
+            <a onclick='accept({{ group.id }})' href="#">Reject</a>
+        </li>
+    {% endfor %}
 
-</body>
-</html>
+{% else %}
+    <li> No Notification available</li>
+{% endif %}

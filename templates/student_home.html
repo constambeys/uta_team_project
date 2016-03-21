@@ -4,6 +4,30 @@
 
 {% block custom-style %}
     <link rel="stylesheet" type="text/css" href="{% static 'styles/student_homepage.css' %}"/>
+
+    <script>
+        function loadHTML() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (xhttp.readyState == 4 && xhttp.status == 200) {
+                    document.getElementById("ajax_block").innerHTML = xhttp.responseText;
+                }
+            };
+            xhttp.open("GET", "{% url 'notifications_view' %}", true);
+            xhttp.send();
+        }
+
+        function accept(group_id) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (xhttp.readyState == 4) {
+
+                }
+            };
+            xhttp.open("GET", "notification_accept/" + group_id + "/", true);
+            xhttp.send();
+        }
+    </script>
 {% endblock %}
 
 {% block title %} Student Homepage {% endblock %}
@@ -13,7 +37,16 @@
     <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right">
             <li class="active"><a href="{% url 'home' %}" style="margin-right: 40px">Home</a></li>
-            <li><a href="{% url 'notifications_view' %}" style="margin-right: 40px">Notifications</a></li>
+            <li class="dropdown">
+                <a onClick="loadHTML(); return false;" href="#" class="dropdown-toggle" data-toggle="dropdown">Notifications
+                    <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <ul id="ajax_block" class="list-inline" style="width: 500px">
+
+
+                    </ul>
+                </ul>
+            </li>
             <li><a href="#profile">{{ username }}</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
