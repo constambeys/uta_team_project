@@ -55,6 +55,7 @@
                     <div class="col-sm-6">
                         {% csrf_token %}
                         {% for field in assign_form %}
+                         <br/>
                         {{ field.errors }}
                         {{ field.label_tag }} <br/> {{ field }}
                         <br/>
