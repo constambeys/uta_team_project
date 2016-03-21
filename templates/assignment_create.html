@@ -25,7 +25,7 @@
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 
-{{% if datetime_form %}
+{% if datetime_form %}
 {{ datetime_form.media }}
 {% endif %}
 
@@ -37,7 +37,7 @@
 
 <div id="navbar" class="navbar-collapse collapse">
     <ul class="nav navbar-nav navbar-right">
-        <li class="active"><a href="#">Home</a></li>
+        <li class="active"><a href="#" style="margin-right: 40px">Home</a></li>
         <li><a href="#profile">{{ username }}</a></li>
         <li><a href="{% url 'logout' %}">Logout</a></li>
     </ul>
@@ -48,7 +48,7 @@
 {% block body %}
 <div class="jumbotron" style="padding: 0px">
     <div class="container img-background" style="width:100%; margin: 0px;">
-        <div class="container" style="padding-top: 230px">
+        <div class="container" style="padding-top: 160px">
             <div class="row col-sm-8 col-sm-offset-2 form-background">
                 <form id="assign_form" method="post" action="{% url 'assignment_create' %}"
                       enctype="multipart/form-data">
