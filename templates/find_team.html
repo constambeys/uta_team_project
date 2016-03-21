@@ -34,27 +34,27 @@
                         {% for group in ranked_groups %}
 
                             <div class="team-panel">
-                            {% if group == top_group %}
-                                <div class="panel panel-primary">
-                            {% else %}
-                                <div class="panel panel-success">
-                            {% endif %}
-                        <div class="panel-heading">{{ group.name }}</div>
-                        <div class="panel-body">
-                            <div class="div-team">
-                                <ul>
-                                    {% for student in group.students.all %}
-                                        <li>{{ student.user.first_name }} {{ student.user.last_name }}</li>
-                                    {% endfor %}
-                                </ul>
+                                {% if group == top_group %}
+                                    <div class="panel panel-primary">
+                                {% else %}
+                                    <div class="panel panel-success">
+                                {% endif %}
+                                        <div class="panel-heading">{{ group.name }} </div>
+                                        <div class="panel-body">
+                                        <div class="div-team">
+                                            <ul>
+                                            {% for student in group.students.all %}
+                                                <li>{{ student.user.first_name }} {{ student.user.last_name }}</li>
+                                            {% endfor %}
+                                            </ul>
 
-                                <p><a class="btn btn-default"
-                                      href="{% url 'select_team' group.pk %}"
-                                      role="button">Select</a></p>
+                                            <p><a class="btn btn-default"
+                                            href="{% url 'select_team' group.pk %}"
+                                            role="button">Select</a></p>
+                                        </div>
+                                        </div>
+                                    </div>
                             </div>
-                        </div>
-                        </div>
-                        </div>
                         {% endfor %}
                     {% else %}
 
@@ -63,20 +63,16 @@
                             <div class="panel panel-success">
 
                                 <div class="panel-heading">No groups available</div>
-                                <div class="panel-body">
-
-                                </div>
+                                <div class="panel-body"> </div>
                             </div>
                         </div>
 
                     {% endif %}
 
-
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
 
 {% endblock %}
