@@ -1,11 +1,10 @@
 {% if not_accepted %}
     {% for group in not_accepted %}
         <li> {{ group.name }}
-            <a onclick='accept({{ group.id }})' href="#">Accept</a>
-            <a onclick='accept({{ group.id }})' href="#">Reject</a>
+            <a onclick='acceptORreject({{ group.id }},true)' href="#">Accept</a>
+            <a onclick='acceptORreject({{ group.id }},false)' href="#">Reject</a>
         </li>
     {% endfor %}
-
 {% else %}
-    <li> No Notification available</li>
+    <li> No Notifications available</li>
 {% endif %}
