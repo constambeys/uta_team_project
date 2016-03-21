@@ -3,69 +3,95 @@
 {% load static %}
 
 {% block custom-style %}
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/assignment_create.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'styles/assignment_create.css' %}"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">var switchTo5x=true;</script>
+<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+<script type="text/javascript">
+    stLight.options({publisher: "48952996-13d3-49f3-9854-e6438041a4b3", doNotHash: false, doNotCopy: false, hashAddressBar: false});
+
+
+</script>
+<meta property="og:description"
+      content="Bootstrap django-datetime-widget is a simple and clean widget for DateField, Timefiled and DateTimeField in Django framework. It is based on Bootstrap datetime picker, supports both Bootstrap 3 and Bootstrap 2"/>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<!-- Optional theme -->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<!-- Latest compiled and minified JavaScript -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+{{% if datetime_form %}
+{{ datetime_form.media }}
+{% endif %}
+
 {% endblock %}
 
 {% block title %} Instructor Homepage {% endblock %}
 
 {% block navbar %}
 
-    <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="#profile">{{ username }}</a></li>
-            <li><a href="{% url 'logout' %}">Logout</a></li>
-        </ul>
-    </div><!--/.navbar-collapse -->
+<div id="navbar" class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="#profile">{{ username }}</a></li>
+        <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+</div><!--/.navbar-collapse -->
 
 {% endblock %}
 
 {% block body %}
-    <div class="jumbotron" style="padding: 0px">
-        <div class="container img-background" style="width:100%; margin: 0px;">
-            <div class="container" style="padding-top: 230px">
-                <div class="row col-sm-8 col-sm-offset-2 form-background">
-                    <form id="assign_form" method="post" action="{% url 'assignment_create' %}"
-                          enctype="multipart/form-data">
+<div class="jumbotron" style="padding: 0px">
+    <div class="container img-background" style="width:100%; margin: 0px;">
+        <div class="container" style="padding-top: 230px">
+            <div class="row col-sm-8 col-sm-offset-2 form-background">
+                <form id="assign_form" method="post" action="{% url 'assignment_create' %}"
+                      enctype="multipart/form-data">
 
-                        <div class="col-sm-6">
-                            {% csrf_token %}
-                            {% for field in assign_form %}
-                                {{ field.errors }}
-                                {{ field.label_tag }} <br/> {{ field }}
-                                <br/>
-                            {% endfor %}
+                    <div class="col-sm-6">
+                        {% csrf_token %}
+                        {% for field in assign_form %}
+                        {{ field.errors }}
+                        {{ field.label_tag }} <br/> {{ field }}
+                        <br/>
+                        {% endfor %}
 
-                            <input type="file" name="students" accept="*">
-                            <!-- Provide a button to click to submit the form. -->
-                            <input id="submit" class="btn btn-success" type="submit" name="submit" value="Create"/>
-                        </div>
+                        <br/>
+                        {{ datetime_form.as_table }}
+                        <br/>
 
-                        <div class="col-sm-6">
-                            {% csrf_token %}
-                            {% for field in req_form %}
-                                {{ field.errors }}
-                                {{ field.label_tag }} <br/> {{ field }}
-                                <br/>
-                            {% endfor %}
-                        </div>
+                        {% for field in req_form %}
+                        {{ field.errors }}
+                        {{ field.label_tag }} <br/> {{ field }}
+                        <br/>
+                        {% endfor %}
 
-                        <div class="col-sm-6">
-                            {% csrf_token %}
-                            {% for field in rated_qualif_form %}
-                                {{ field.errors }}
-                                {{ field.label_tag }} <br/> {{ field }}
-                                <br/>
-                            {% endfor %}
-                        </div>
-                    </form>
+                        <br/>
+                        <input type="file" name="students" accept="*">
+                        <br/>
+                        <!-- Provide a button to click to submit the form. -->
+                        <input id="submit" class="btn btn-success" type="submit" name="submit" value="Create"/>
+                    </div>
 
-                </div>
+                    <div class="col-sm-6">
+                        {% csrf_token %}
+                        {% for field in rated_qualif_form %}
+                        {{ field.errors }}
+                        {{ field.label_tag }} <br/> {{ field }}
+                        <br/>
+                        {% endfor %}
+                    </div>
+
+                </form>
+
             </div>
         </div>
     </div>
+</div>
 
 
 {% endblock %}

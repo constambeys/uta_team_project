@@ -178,13 +178,17 @@ def assignment_create(request):
         if request.user.is_authenticated():
 
             profile = request.user.instructor
-           
+
             assign_form = AssignmentForm(data=request.POST)
             req_form = RequirementsForm(data=request.POST)
             rated_qualif_form = RatedQualificationForm(data=request.POST)
+            datetime_form = DateTimeFieldForm(data=request.POST)
 
             # If the two forms are valid
-            if assign_form.is_valid() and req_form.is_valid() and rated_qualif_form.is_valid():
+            if assign_form.is_valid() and \
+                    req_form.is_valid() and \
+                    rated_qualif_form.is_valid() and \
+                    datetime_form.is_valid():
 
                 # Requirements
                 min_group_size = req_form.cleaned_data['min_group_size']
@@ -196,12 +200,16 @@ def assignment_create(request):
                 [requirements.rated_qualifications.add(rq) for rq in rated_qualifs]
                 requirements.save()
 
+                # Deadline
+                datetime = datetime_form.cleaned_data['deadline']
+                print datetime
+
                 # Assignments
                 assign = Assignment.objects.create(
                     name=assign_form.cleaned_data['name'],
                     instructor=profile,
                     course=assign_form.cleaned_data['course'],
-                    deadline=assign_form.cleaned_data['deadline'],
+                    deadline=datetime,
                     requirements=requirements,
                 )
                 assign.save()
@@ -222,6 +230,7 @@ def assignment_create(request):
         assign_form = AssignmentForm()
         req_form = RequirementsForm()
         rated_qualif_form = RatedQualificationForm()
+        datetime_form = DateTimeFieldForm()
 
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
@@ -230,6 +239,7 @@ def assignment_create(request):
     context_dict['assign_form'] = assign_form
     context_dict['req_form'] = req_form
     context_dict['rated_qualif_form'] = rated_qualif_form
+    context_dict['datetime_form'] = datetime_form
 
     # Render the template depending on the context.
     return render(request, 'assignment_create.html', context_dict)

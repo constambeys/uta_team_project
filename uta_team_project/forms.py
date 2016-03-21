@@ -1,12 +1,13 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from uta_models.models import *
+from datetimewidget.widgets import DateTimeWidget
 
 
 class AssignmentForm(forms.ModelForm):
     class Meta:
         model = Assignment
-        fields = ('name', 'course', 'deadline')
+        fields = ('course', 'name')
 
 
 class GroupForm(forms.ModelForm):
@@ -37,7 +38,12 @@ class CourseAssignmentForm(forms.Form):
 
 
 class RatedQualificationForm(forms.Form):
-    rated_qualifications = forms.CharField(widget=forms.Textarea)
+    rated_qualifications = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'e.g. <Skill> <1-4>'}))
+
+
+# https://github.com/asaglimbeni/django-datetime-widget
+class DateTimeFieldForm(forms.Form):
+    deadline = forms.DateTimeField(widget=DateTimeWidget(usel10n=True, bootstrap_version=2))
 
 
 
