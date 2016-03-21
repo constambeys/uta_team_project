@@ -11,6 +11,9 @@
     stLight.options({publisher: "48952996-13d3-49f3-9854-e6438041a4b3", doNotHash: false, doNotCopy: false, hashAddressBar: false});
 
 
+
+
+
 </script>
 <meta property="og:description"
       content="Bootstrap django-datetime-widget is a simple and clean widget for DateField, Timefiled and DateTimeField in Django framework. It is based on Bootstrap datetime picker, supports both Bootstrap 3 and Bootstrap 2"/>
@@ -33,10 +36,8 @@
 {% block navbar %}
 
 <div id="navbar" class="navbar-collapse collapse">
-    <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
-    </ul>
     <ul class="nav navbar-nav navbar-right">
+        <li class="active"><a href="#">Home</a></li>
         <li><a href="#profile">{{ username }}</a></li>
         <li><a href="{% url 'logout' %}">Logout</a></li>
     </ul>
@@ -54,8 +55,26 @@
 
                     <div class="col-sm-6">
                         {% csrf_token %}
+                        {% for field in rated_qualif_form %}
+                        {{ field.errors }}
+                        {{ field.label_tag }}
+                        <br/>
+
+                        Add the skills required for this assignment below and rate them from 1 to 4 using the format indicated:
+                        <br/>
+                        <br/> {{ field }}
+                        <br/>
+                        {% endfor %}
+
+                        <br/>
+                        <input type="file" name="students" accept="*">
+                        <br/>
+                    </div>
+
+                    <div class="col-sm-6">
+                        {% csrf_token %}
                         {% for field in assign_form %}
-                         <br/>
+                        <br/>
                         {{ field.errors }}
                         {{ field.label_tag }} <br/> {{ field }}
                         <br/>
@@ -71,21 +90,11 @@
                         <br/>
                         {% endfor %}
 
-                        <br/>
-                        <input type="file" name="students" accept="*">
-                        <br/>
+                        <br>
                         <!-- Provide a button to click to submit the form. -->
                         <input id="submit" class="btn btn-success" type="submit" name="submit" value="Create"/>
                     </div>
 
-                    <div class="col-sm-6">
-                        {% csrf_token %}
-                        {% for field in rated_qualif_form %}
-                        {{ field.errors }}
-                        {{ field.label_tag }} <br/> {{ field }}
-                        <br/>
-                        {% endfor %}
-                    </div>
 
                 </form>
 

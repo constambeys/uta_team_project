@@ -14,7 +14,7 @@
             {% csrf_token %}
             <a class="btn btn-success" href="{% url 'about-us' %}">About us</a>
             <a class="btn btn-success" href="{% url 'uta_users' %}">Who uses UTA?</a>
-            <button class="btn btn-success">Features</button>
+            <a class="btn btn-success" href="{% url 'index' %}#features">Features</a>
             <a class="btn btn-success" href="{% url 'help' %}">Help</a>
         </div>
     </div><!--/.navbar-collapse -->

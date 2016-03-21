@@ -9,6 +9,33 @@
     background-image: url("/static/images/lecturer-theatre.png");
     background-position: center;
     background-size: cover;
-    height: 750px;
+    height: 850px;
+}
+
+input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.rated_qualif {
+width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+div > img {
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    max-width: 100%;
 }
 

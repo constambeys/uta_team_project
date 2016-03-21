@@ -38,7 +38,7 @@ class CourseAssignmentForm(forms.Form):
 
 
 class RatedQualificationForm(forms.Form):
-    rated_qualifications = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'e.g. <Skill> <1-4>'}))
+    rated_qualifications = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'e.g. Python 3'}))
 
 
 # https://github.com/asaglimbeni/django-datetime-widget
