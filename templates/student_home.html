@@ -17,14 +17,18 @@
             xhttp.send();
         }
 
-        function accept(group_id) {
+        function acceptORreject(group_id, accept) {
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
-                if (xhttp.readyState == 4) {
+                if (xhttp.readyState == 4 && xhttp.status == 200) {
 
                 }
             };
-            xhttp.open("GET", "notification_accept/" + group_id + "/", true);
+            if (accept) {
+                xhttp.open("GET", "notification_accept/" + group_id + "/", true);
+            } else {
+                xhttp.open("GET", "notification_reject/" + group_id + "/", true);
+            }
             xhttp.send();
         }
     </script>
@@ -41,10 +45,12 @@
                 <a onClick="loadHTML(); return false;" href="#" class="dropdown-toggle" data-toggle="dropdown">Notifications
                     <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <ul id="ajax_block" class="list-inline" style="width: 500px">
+                    <li>
+                        <ul id="ajax_block" class="list-inline" style="width: 500px">
 
 
-                    </ul>
+                        </ul>
+                    </li>
                 </ul>
             </li>
             <li><a href="#profile">{{ username }}</a></li>
@@ -70,9 +76,10 @@
                                         <ul>
                                             {% for assignment in assignments %}
                                                 <li id="{{ assignment.id }}">
-                                                    <a style="color: cadetblue" ;
+                                                    <a style="color: cadetblue"
                                                        href="{% url 'assignment_view' assignment.id %}">{{ assignment.course }}
-                                                        - {{ assignment.name }}</a></li>
+                                                        - {{ assignment.name }}</a>
+                                                </li>
                                             {% endfor %}
                                         </ul>
                                     {% else %}
@@ -87,7 +94,7 @@
                                 <div class="panel-heading">
                                     <h3 class="panel-title">My Teams</h3>
                                 </div>
-                                <div class="panel-body" style="color: cadetblue" ;>
+                                <div class="panel-body" style="color: cadetblue">
                                     {% if groups %}
                                         <ul>
                                             {% for group in groups %}

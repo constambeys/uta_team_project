@@ -382,25 +382,49 @@ def notification_accept(request, group_id):
             logout(request)  # Clear store session
             return HttpResponse("Oops something went wrong!!")
 
-        # Return a rendered response to send to the client.
+        try:
+            group = Group.objects.get(id=group_id)
+            if not hasattr(group, 'notification'):
+                notif = Notification.objects.create(
+                    group=group,
+                )
+                notif.save()
 
-        group = Group.objects.get(id=group_id)
-        if not hasattr(group, 'notification'):
-            notif = Notification.objects.create(
-                group=group,
-            )
-            notif.save()
+            result = group.notification.accepted.filter(id=student.id)
+            if not (student in result):
+                group.notification.accepted.add(student)
+                group.notification.save()
 
-        result = group.notification.accepted.filter(id=student.id)
-        if not (student in result):
-            group.notification.accepted.add(student)
-            group.notification.save()
-
-        return HttpResponse("Success")
-
+            return HttpResponse("Success")
+        except:
+            return HttpResponse("Fail")
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
 
+@login_required
+def notification_reject(request, group_id):
+    # ------------------------------use populate.py script--------------------------
+    if request.user.is_authenticated():
+
+        # Construct a dictionary to pass to the template engine as its context.
+        context_dict = {}
+        user = request.user
+
+        if hasattr(request.user, 'student'):
+            student = request.user.student
+            user_type = "student"
+        else:
+            logout(request)  # Clear store session
+            return HttpResponse("Oops something went wrong!!")
+
+        try:
+            group = Group.objects.get(id=group_id)
+            group.delete()
+            return HttpResponse("Success")
+        except:
+            return HttpResponse("Fail")
+    else:
+        return HttpResponse("Since you're logged in, you can see this text!")
 
 @login_required
 def restricted(request):
