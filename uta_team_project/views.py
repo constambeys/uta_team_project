@@ -61,7 +61,7 @@ def find_team(request, assignment_id):
     student = request.user.student
     my_group = student.group_set.filter(assignment_id=assignment_id)
     if my_group.count() != 0:
-        return HttpResponse("Sorry you are already in a group")
+        return HttpResponseRedirect(reverse('error', kwargs={'message': "Sorry you are already in a group"}))
 
     context_dict = {}
     # The assignment that the user has selected
