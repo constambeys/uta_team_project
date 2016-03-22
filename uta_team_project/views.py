@@ -4,12 +4,14 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from forms import *
+from uta_auth.forms import UserForm, StudentForm
 from uta_models.models import Student
 from django.utils.safestring import mark_safe
 import calendar
 from datetime import date
 from MyCalendar import MyCalendar
 from Matching import Matching
+
 
 
 def index(request):
@@ -462,3 +464,87 @@ def uta_users(request):
 
 def help(request):
     return render(request, 'help.html', {})
+
+@login_required
+def studentprofile(request):
+
+    # Create a context dictionary which we can pass to the template rendering engine.
+    context_dict = {}
+    if request.user.is_authenticated():
+
+
+
+        print 'BBB'
+        # If it's a HTTP POST, we're interested in processing form data.
+        if request.method == 'POST':
+            # Attempt to grab information from the raw form information.
+            # Note that we make use of both UserForm and UserProfileForm.
+            user_form = UserForm(data=request.POST)
+            print user_form
+            profile_form = StudentForm(data=request.POST)
+            print 'aaa222'
+            # If the two forms are valid...
+            if user_form.is_valid():
+                # Save the user's form data to the database.
+
+                user = User.objects.get(username=user_form.cleaned_data['username'])
+
+                print user
+                user = user_form.save()
+
+                # Now we hash the password with the set_password method.
+                # Once hashed, we can update the user object.
+                user.set_password(user.password)
+                user.save()
+
+                # Now sort out the UserProfile instance.
+                # Since we need to set the user attribute ourselves, we set commit=False.
+                # This delays saving the model until we're ready to avoid integrity problems.
+                profile = profile_form.save(commit=False)
+                profile.user = user
+
+                # Did the user provide a profile picture?
+                # If so, we need to get it from the input form and put it in the UserProfile model.
+                # if 'picture' in request.FILES:
+                #   profile.picture = request.FILES['picture']
+
+                # Now we save the UserProfile model instance.
+                profile.save()
+                print 'aaa'
+
+
+            # Invalid form or forms - mistakes or something else?
+            # Print problems to the terminal.
+            # They'll also be shown to the user.
+            else:
+
+                print user_form.errors, profile_form.errors
+
+        # Not a HTTP POST, so we render our form using two ModelForm instances.
+        # These forms will be blank, ready for user input.
+        else:
+
+             # Construct a dictionary to pass to the template engine as its context.
+
+            user = request.user
+            if hasattr(request.user, 'student'):
+                profile = request.user.student
+                print 'TEEEEEEST'
+
+                form = UserForm(initial={'username': user.username,
+                                         'first_name': user.first_name,
+                                         'last_name': user.last_name,
+                                         'email': "geo@gmai.com" ,
+                                         'password':user.password})
+                form.fields['username'].widget.attrs['readonly'] = True
+                context_dict['User'] = user.username
+                profile_form = StudentForm(initial={'matriculationNumber': profile.matriculationNumber,
+                                                    'department': profile.department,
+                                                    'lvlOfStudy': profile.lvlOfStudy})
+
+            # Adds our results list to the template context under name pages.
+            context_dict['user_form'] = form
+            context_dict['profile_form'] = profile_form
+
+        # Render the template depending on the context.
+    return render(request, 'student_profile.html', context_dict)

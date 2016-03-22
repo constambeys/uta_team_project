@@ -32,6 +32,7 @@
 
         {% for field in user_form %}
         {{ field.errors }}
+        {{ field.non_field_errors }}
 
         {{ field.label_tag }} {{ field }}
 
@@ -39,6 +40,7 @@
 
         {% for field in profile_form %}
         {{ field.errors }}
+        {{ field.non_field_errors }}
         {{ field.label_tag }} {{ field }}
         {% endfor %}
 

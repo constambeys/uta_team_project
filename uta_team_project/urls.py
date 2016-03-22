@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     url(r'^about-us/', views.about_us, name='about-us'),
     url(r'^uta_users/', views.uta_users, name='uta_users'),
     url(r'^help/', views.help, name='help'),
+    url(r'^studentprofile/', views.studentprofile, name='studentprofile'),
 )
