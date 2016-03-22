@@ -23,9 +23,9 @@ input[type=submit]:hover {
     background-color: #45a049;
 }
 
-.form-background {
+#form1 {
     border-radius: 5px;
-    background-color: rgba(238, 238, 238, 0.8);
+    background-color: rgba(235, 235, 235, 0.7);
     padding: 40px;
 }
 
@@ -35,9 +35,10 @@ div > img {
     max-height: 100%;
     max-width: 100%;
 }
+
 .img-background {
-    background-image: url("/static/images/students.png");
+    background-image: url("/static/images/Teamwork.png");
     background-position: center;
     background-size: cover;
-    height: 800px;
+    height: 720px;
 }
