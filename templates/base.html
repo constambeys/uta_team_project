@@ -34,6 +34,24 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <script>
+        var previousColor = "blue";
+        function bigImg(x) {
+            var x = document.getElementById(x).getElementsByTagName('a')[0];
+            if (x) {
+                previousColor = x.style.color;
+                x.style.color = "red";
+            }
+        }
+
+        function normalImg(x) {
+            var x = document.getElementById(x).getElementsByTagName('a')[0];
+            if (x) {
+                x.style.color = previousColor;
+            }
+        }
+    </script>
+
     <link rel="stylesheet" type="text/css" href="{% static 'styles/base.css' %}"/>
     {% block custom-style %}
 
@@ -55,7 +73,7 @@
 
             <a class="navbar-brand"> <img src="/static/images/logo.png" style="height: 110%; margin-top:-5px">
                 {% block navbar_log %}{% endblock %}</a>
-            <a class="navbar-brand"> UTA | The University Team Allocator</a> {% block navbar_title %}{% endblock %}
+            <a class="navbar-brand" href="{% url 'home' %}"> UTA | The University Team Allocator</a> {% block navbar_title %}{% endblock %}
         </div>
 
         {% block navbar %}

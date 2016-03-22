@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-
 {% extends 'base.html' %}
 
 {% load static %}
@@ -8,12 +6,99 @@
     <link rel="stylesheet" type="text/css" href="{% static 'styles/about_us.css' %}"/>
 {% endblock %}
 
+{% block title %} About us {% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% block navbar %}
+    <div id="navbar" class="navbar-collapse collapse">
+        <div class="navbar-form navbar-right">
+            {% csrf_token %}
+            <a class="btn btn-success" href="{% url 'about-us' %}">About us</a>
+            <a class="btn btn-success" href="{% url 'uta_users' %}">Who uses UTA?</a>
+            <a class="btn btn-success" href="{% url 'index' %}#features">Features</a>
+            <a class="btn btn-success" href="{% url 'help' %}">Help</a>
+        </div>
+    </div><!--/.navbar-collapse -->
+{% endblock %}
 
-</body>
-</html>
+{% block body %}
+    <div class="title" style="text-align: center">
+        <br>
+
+        <h2> Team UTA</h2>
+
+
+        <br>
+
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-1" style="margin-top: 150px">
+                <h4>Nickolas Zoulis</h4>
+                <br>
+
+                <p> Finished his Bachelor Degree in Athens, Greece
+                    and is currently doing his Master degree in Computing Science in the University of Glasgow.
+                    He loves travelling and has a passion for winter sports. </p>
+            </div>
+            <div class="col-sm-4 " style="text-align: center" ;>
+                <img src="/static/images/Nick.png" style="height:500px;width:500px">
+            </div>
+        </div>
+
+
+        <br>
+        <br>
+
+        <div class="row">
+            <div class="col-sm-5 " style="text-align: right" ;>
+                <img src="/static/images/Tim.png" style="height:550px;">
+            </div>
+            <div class="col-sm-4 col-sm-offset-1" style="margin-top: 150px" ;>
+                <br><h4>Timotheos Constambeys</h4>
+                <br>
+
+                <p> Finished his Bachelor Degree in the University of Cyprus
+                    and is currently doing his Master degree in Computing Science in the University of Glasgow.
+                    He loves playing tennis, programming and solving puzzles.</p>
+            </div>
+        </div>
+        <br>
+        <br>
+
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-1" style="margin-top: 150px">
+                <h4>Georgia Georgiou</h4>
+                <br>
+
+                <p> Finished her Bachelor Degree as a physicist in Cyprus, Greece
+                    and is currently doing her Master degree in Data Science in the University of Glasgow.
+                    She plays LoL in her free time. </p>
+            </div>
+            <div class="col-sm-4 " style="text-align: center" ;>
+                <img src="/static/images/Geo.png" style="height:500px;">
+            </div>
+        </div>
+
+        <br>
+        <br>
+
+        <div class="row">
+            <div class="col-sm-5 " style="text-align: right" ;>
+                <img src="/static/images/Tsveti.png" style="height:500px;">
+            </div>
+            <div class="col-sm-4 col-sm-offset-1" style="margin-top: 150px" ;>
+                <br><h4>Tsvetelina Nikolova</h4>
+                <br>
+
+                <p> Finished her Bachelor Degree in International Business with German at Aston University, Birmingham
+                    and is currently doing her Master in Information Technology in the University of Glasgow.
+                    She is adventurous, loves travelling and exploring lost places that reveal ancient cultures
+                    and civilizations. She has passion for sports with yoga being on the top of her list. </p>
+            </div>
+        </div>
+
+    </div>
+
+
+    </div>
+
+
+{% endblock %}

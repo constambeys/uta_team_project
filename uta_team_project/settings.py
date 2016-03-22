@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'uta_auth',
     'uta_models',
+    'datetimewidget',
 )
 
 MIDDLEWARE_CLASSES = (

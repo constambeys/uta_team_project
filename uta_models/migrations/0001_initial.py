@@ -77,6 +77,15 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='Notification',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Qualification',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -101,8 +110,8 @@ class Migration(migrations.Migration):
             name='Requirement',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('min_group_size', models.IntegerField(default=1)),
-                ('max_group_size', models.IntegerField(default=2)),
+                ('min_group_size', models.IntegerField(default=1, validators=[django.core.validators.MinValueValidator(1)])),
+                ('max_group_size', models.IntegerField(default=2, validators=[django.core.validators.MaxValueValidator(4)])),
                 ('rated_qualifications', models.ManyToManyField(to='uta_models.RatedQualification')),
             ],
             options={
@@ -122,6 +131,18 @@ class Migration(migrations.Migration):
             options={
             },
             bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='notification',
+            name='accepted',
+            field=models.ManyToManyField(to='uta_models.Student'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='notification',
+            name='group',
+            field=models.OneToOneField(to='uta_models.Group'),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='group',

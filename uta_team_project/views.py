@@ -3,17 +3,13 @@ from django.contrib.auth import *
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from uta_models.models import *
 from forms import *
 from uta_models.models import Student
-from django.shortcuts import render_to_response
 from django.utils.safestring import mark_safe
-from calendar import HTMLCalendar
 import calendar
 from datetime import date
 from MyCalendar import MyCalendar
 from Matching import Matching
-from uta_auth.forms import *
 
 
 def index(request):
@@ -54,20 +50,24 @@ def home(request):
 
 @login_required
 def find_team(request, assignment_id):
+    student = request.user.student
+    my_group = student.group_set.filter(assignment_id=assignment_id)
+    if my_group.count() != 0:
+        return HttpResponse("Sorry you are already in a group")
+
     context_dict = {}
     # The assignment that the user has selected
     assignment = Assignment.objects.get(id=assignment_id)
     requirements = assignment.requirements
     groups = Group.objects.filter(assignment__name=assignment.name)
 
-    groups_benefits = Matching(groups, requirements, request.user.student).rank()
-
+    groups_benefits = Matching(groups, requirements, student).rank()
     ranked_groups = [g for (g, b) in groups_benefits]
 
-    print ranked_groups
+    # print ranked_groups
 
     context_dict['ranked_groups'] = ranked_groups
-    if ranked_groups > 0:
+    if len(ranked_groups) > 0:
         context_dict['top_group'] = ranked_groups[0]
     context_dict['assignment'] = assignment
     return render(request, 'find_team.html', context_dict)
@@ -103,16 +103,14 @@ def student_home(request):
         context_dict['groups'] = Group.objects.filter(students__user=user)
 
         profile = request.user.student
-        deadlines = []
-        for a in profile.assignment_set.all():
-            deadlines.append(a.deadline.date())
+        assignments = profile.assignment_set.all()
 
         context_dict['username'] = user.username
         context_dict['assignments'] = Assignment.objects.filter(students__user=user)
         context_dict['groups'] = Group.objects.filter(students__user=user)
 
-        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, deadlines=deadlines).formatmonth(date.today().year,
-                                                                                            date.today().month)
+        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, assignments=assignments).formatmonth(date.today().year,
+                                                                                                date.today().month)
         context_dict['calendar'] = mark_safe(htmlStr)
 
         return render(request, 'student_home.html', context_dict)
@@ -129,17 +127,17 @@ def instructor_home(request):
         profile = request.user.instructor
         courses = []
         deadlines = []
-        for a in profile.assignment_set.all():
-            deadlines.append(a.deadline.date())
+        assignments = profile.assignment_set.all()
+        for a in assignments:
             if a.course not in courses:
                 courses.append(a.course)
 
         context_dict['username'] = user.username
         context_dict['courses'] = courses
-        context_dict['assignments'] = profile.assignment_set.all()
+        context_dict['assignments'] = assignments
 
-        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, deadlines=deadlines).formatmonth(date.today().year,
-                                                                                            date.today().month)
+        htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, assignments=assignments).formatmonth(date.today().year,
+                                                                                                date.today().month)
         context_dict['calendar'] = mark_safe(htmlStr)
 
         return render(request, 'instructor_home.html', context_dict)
@@ -147,42 +145,92 @@ def instructor_home(request):
         return HttpResponse("Since you're logged in, you can see this text!")
 
 
+def parse(rated_qualifs):
+    lines = rated_qualifs.splitlines()
+
+    list = []
+
+    for line in lines:
+        words = line.split()
+
+        if len(words) == 2:
+            try:
+                qualif = str(words[0])
+                rating = int(words[1])
+
+                if 1 <= rating <= 4:
+                    qualification = Qualification.objects.get_or_create(name=qualif)[0]
+                    list.append(RatedQualification.objects.get_or_create(qualification=qualification, rating=rating)[0])
+                else:
+                    return -1
+            except Exception, e:
+                print e
+                return -1
+        else:
+            return -1
+
+    return list
+
+
 @login_required
 def assignment_create(request):
     if request.method == 'POST':
-        assign_form = AssignmentForm(data=request.POST)
-        req_form = RequirementsForm(data=request.POST)
+        if request.user.is_authenticated():
 
-        # If the two forms are valid
-        if assign_form.is_valid() and req_form.is_valid():
+            profile = request.user.instructor
 
-            requirements = req_form.save()
-            requirements.save()
-            assign = Assignment.objects.create(
-                name=assign_form.cleaned_data['name'],
-                instructor=assign_form.cleaned_data['instructor'],
-                course=assign_form.cleaned_data['course'],
-                deadline=assign_form.cleaned_data['deadline'],
-                requirements=requirements,
-            )
-            assign.save()
+            assign_form = AssignmentForm(data=request.POST)
+            req_form = RequirementsForm(data=request.POST)
+            rated_qualif_form = RatedQualificationForm(data=request.POST)
+            datetime_form = DateTimeFieldForm(data=request.POST)
 
-            try:
-                file = request.FILES['students']
-                for line in file:
-                    id = line.rstrip('\r').rstrip('\n')
-                    s = Student.objects.get(matriculationNumber=id)
-                    assign.students.add(s)
+            # If the two forms are valid
+            if assign_form.is_valid() and \
+                    req_form.is_valid() and \
+                    rated_qualif_form.is_valid() and \
+                    datetime_form.is_valid():
+
+                # Requirements
+                min_group_size = req_form.cleaned_data['min_group_size']
+                max_group_size = req_form.cleaned_data['max_group_size']
+                requirements = Requirement.objects.create(min_group_size=min_group_size, max_group_size=max_group_size)
+                requirements.save()
+                rated_qualifs = rated_qualif_form.cleaned_data['rated_qualifications']
+                rated_qualifs = parse(rated_qualifs)
+                [requirements.rated_qualifications.add(rq) for rq in rated_qualifs]
+                requirements.save()
+
+                # Deadline
+                datetime = datetime_form.cleaned_data['deadline']
+                print datetime
+
+                # Assignments
+                assign = Assignment.objects.create(
+                    name=assign_form.cleaned_data['name'],
+                    instructor=profile,
+                    course=assign_form.cleaned_data['course'],
+                    deadline=datetime,
+                    requirements=requirements,
+                )
                 assign.save()
-            except:
-                print "invalid student number found"
 
-        else:
-            print assign_form.errors
+                try:
+                    file = request.FILES['students']
+                    for line in file:
+                        id = line.rstrip('\r').rstrip('\n')
+                        s = Student.objects.get(matriculationNumber=id)
+                        assign.students.add(s)
+                    assign.save()
+                except:
+                    print "invalid student number found"
 
+            else:
+                print assign_form.errors
     else:
         assign_form = AssignmentForm()
         req_form = RequirementsForm()
+        rated_qualif_form = RatedQualificationForm()
+        datetime_form = DateTimeFieldForm()
 
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
@@ -190,6 +238,8 @@ def assignment_create(request):
     # Adds our results list to the template context under name pages.
     context_dict['assign_form'] = assign_form
     context_dict['req_form'] = req_form
+    context_dict['rated_qualif_form'] = rated_qualif_form
+    context_dict['datetime_form'] = datetime_form
 
     # Render the template depending on the context.
     return render(request, 'assignment_create.html', context_dict)
@@ -222,7 +272,7 @@ def assignment_view(request, assignment_id):
 
         context_dict['assignment'] = assignment
         context_dict['groups'] = groups
-        context_dict['no_group'] = assignment.students.filter(group=None)
+        context_dict['no_group'] = getNoGroup(assignment)
         return render(request, 'assignment_view.html', context_dict)
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
@@ -239,7 +289,8 @@ def team_create(request, assignment_id):
     if request.method == 'POST':
         # Attempt to grab information from the raw form information.
         # Note that we make use of both UserForm and UserProfileForm.
-        group_form = GroupForm(data=request.POST, limit=limit, students=assignment.students.filter(group=None))
+        qs = getNoGroupQS(assignment)
+        group_form = GroupForm(data=request.POST, limit=limit, students_qs=qs)
 
         # If the two forms are valid...
         if group_form.is_valid():
@@ -254,6 +305,7 @@ def team_create(request, assignment_id):
 
             # Update our variable to tell the template registration was successful.
             registered = True
+            return HttpResponseRedirect(reverse('assignment_view', args=[assignment_id]))
 
         # Invalid form or forms - mistakes or something else?
         # Print problems to the terminal.
@@ -264,7 +316,8 @@ def team_create(request, assignment_id):
     # Not a HTTP POST, so we render our form using two ModelForm instances.
     # These forms will be blank, ready for user input.
     else:
-        group_form = GroupForm(limit=limit, students=assignment.students.filter(group=None))
+        qs = getNoGroupQS(assignment)
+        group_form = GroupForm(limit=limit, students_qs=qs)
 
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
@@ -280,8 +333,113 @@ def team_create(request, assignment_id):
 
 
 @login_required
+def notifications_view(request):
+    # ------------------------------use populate.py script--------------------------
+    if request.user.is_authenticated():
+
+        # Construct a dictionary to pass to the template engine as its context.
+        context_dict = {}
+        user = request.user
+
+        if hasattr(request.user, 'student'):
+            student = request.user.student
+            user_type = "student"
+        else:
+            logout(request)  # Clear store session
+            return HttpResponse("Oops something went wrong!!")
+
+        # Return a rendered response to send to the client.
+
+        not_accepted = []
+        groups = Group.objects.filter(students__in=[student])
+        for group in groups:
+            if hasattr(group, 'notification'):
+                result = group.notification.accepted.filter(id=student.id)
+                if not (student in result):
+                    not_accepted.append(group)
+            else:
+                not_accepted.append(group)
+
+        context_dict['not_accepted'] = not_accepted
+        return render(request, 'notifications.html', context_dict)
+    else:
+        return HttpResponse("Since you're logged in, you can see this text!")
+
+
+@login_required
+def notification_accept(request, group_id):
+    # ------------------------------use populate.py script--------------------------
+    if request.user.is_authenticated():
+
+        # Construct a dictionary to pass to the template engine as its context.
+        context_dict = {}
+        user = request.user
+
+        if hasattr(request.user, 'student'):
+            student = request.user.student
+            user_type = "student"
+        else:
+            logout(request)  # Clear store session
+            return HttpResponse("Oops something went wrong!!")
+
+        try:
+            group = Group.objects.get(id=group_id)
+            if not hasattr(group, 'notification'):
+                notif = Notification.objects.create(
+                    group=group,
+                )
+                notif.save()
+
+            result = group.notification.accepted.filter(id=student.id)
+            if not (student in result):
+                group.notification.accepted.add(student)
+                group.notification.save()
+
+            return HttpResponse("Success")
+        except:
+            return HttpResponse("Fail")
+    else:
+        return HttpResponse("Since you're logged in, you can see this text!")
+
+@login_required
+def notification_reject(request, group_id):
+    # ------------------------------use populate.py script--------------------------
+    if request.user.is_authenticated():
+
+        # Construct a dictionary to pass to the template engine as its context.
+        context_dict = {}
+        user = request.user
+
+        if hasattr(request.user, 'student'):
+            student = request.user.student
+            user_type = "student"
+        else:
+            logout(request)  # Clear store session
+            return HttpResponse("Oops something went wrong!!")
+
+        try:
+            group = Group.objects.get(id=group_id)
+            group.delete()
+            return HttpResponse("Success")
+        except:
+            return HttpResponse("Fail")
+    else:
+        return HttpResponse("Since you're logged in, you can see this text!")
+
+@login_required
 def restricted(request):
     return HttpResponse("Since you're logged in, you can see this text!")
+
+
+def getNoGroupQS(assignment):
+    queryset_all = Student.objects.all()
+    included_pks = []
+    for student in assignment.students.all():
+        group = student.group_set.filter(assignment_id=assignment.id)
+        if group.count() == 0:
+            included_pks.append(student.pk)
+    queryset = queryset_all.filter(pk__in=included_pks)
+    return queryset
 
 
 def getNoGroup(assignment):
@@ -294,81 +452,13 @@ def getNoGroup(assignment):
     return no_group
 
 
-@login_required
-def studentprofile(request):
-
-    # Create a context dictionary which we can pass to the template rendering engine.
-    context_dict = {}
-    if request.user.is_authenticated():
-
-        # Construct a dictionary to pass to the template engine as its context.
-
-        user = request.user
-        if hasattr(request.user, 'student'):
-            profile = request.user.student
-
-            form = UserForm(initial={'username': user.username,
-                                     'first_name': user.first_name,
-                                     'last_name': user.last_name,
-                                     'email': user.email,
-                                     'password':user.password})
-            form.fields['username'].widget.attrs['readonly'] = True
-            context_dict['User'] = user.username
-            profile_form = StudentForm(initial={'matriculationNumber': profile.matriculationNumber,
-                                                'department': profile.department,
-                                                'lvlOfStudy': profile.lvlOfStudy})
-
-        print 'BBB'
-        # If it's a HTTP POST, we're interested in processing form data.
-        if request.method == 'POST':
-            # Attempt to grab information from the raw form information.
-            # Note that we make use of both UserForm and UserProfileForm.
-            user_form = UserForm(data=request.POST)
-            profile_form = StudentForm(data=request.POST)
-            print 'aaa222'
-            # If the two forms are valid...
-            if  profile_form.is_valid():
-                # Save the user's form data to the database.
-                user = user_form.save()
-
-                # Now we hash the password with the set_password method.
-                # Once hashed, we can update the user object.
-                user.set_password(user.password)
-                user.save()
-
-                # Now sort out the UserProfile instance.
-                # Since we need to set the user attribute ourselves, we set commit=False.
-                # This delays saving the model until we're ready to avoid integrity problems.
-                profile = profile_form.save(commit=False)
-                profile.user = user
-
-                # Did the user provide a profile picture?
-                # If so, we need to get it from the input form and put it in the UserProfile model.
-                # if 'picture' in request.FILES:
-                #   profile.picture = request.FILES['picture']
-
-                # Now we save the UserProfile model instance.
-                profile.save()
-                print 'aaa'
+def about_us(request):
+    return render(request, 'about-us.html', {})
 
 
-            # Invalid form or forms - mistakes or something else?
-            # Print problems to the terminal.
-            # They'll also be shown to the user.
-            else:
-                print user_form.errors, profile_form.errors
-
-        # Not a HTTP POST, so we render our form using two ModelForm instances.
-        # These forms will be blank, ready for user input.
-        else:
-
-            user_form = UserForm()
-
-            # Adds our results list to the template context under name pages.
-            context_dict['user_form'] = form
-            context_dict['profile_form'] = profile_form
+def uta_users(request):
+    return render(request, 'uta_users.html', {})
 
 
-
-        # Render the template depending on the context.
-    return render(request, 'student_profile.html', context_dict)
+def help(request):
+    return render(request, 'help.html', {})

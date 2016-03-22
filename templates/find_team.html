@@ -3,65 +3,76 @@
 {% load static %}
 
 {% block custom-style %}
-<link rel="stylesheet" type="text/css" href="{% static 'styles/find_team.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/find_team.css' %}"/>
 {% endblock %}
 
 {% block title %} Find Team {% endblock %}
 
 {% block navbar %}
 
-<div id="navbar" class="navbar-collapse collapse">
-    <ul class="nav navbar-nav">
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'assignment_view' assignment.id %}">Assignment</a></li>
-        <li><a href="{% url 'team_create' assignment.id %}">Create team</a></li>
-        <li class="active"><a href="{% url 'find_team' assignment.id %}">Find team</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-        <li><a href="#profile"> {{ username }}</a></li>
-        <li><a href="{% url 'logout' %}">Logout</a></li>
-    </ul>
-</div><!--/.navbar-collapse -->
+    <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'assignment_view' assignment.id %}">Assignment</a></li>
+            <li><a href="{% url 'team_create' assignment.id %}">Create team</a></li>
+            <li class="active"><a href="{% url 'find_team' assignment.id %}" style="margin-right: 40px">Find team</a>
+            </li>
+            <li><a href="#profile"> {{ username }}</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div><!--/.navbar-collapse -->
 
 {% endblock %}
 
 {% block body %}
-<div class="jumbotron">
-    <div class="container">
-    </div>
-</div>
+    <div class="jumbotron" style="padding: 0px">
+        <div class="container img-background" style="width:100%; margin: 0px;">
+            <div id="content" class="container fullscreen">
+                <div class="row" id="teams-panel" style="margin-top: 250px">
 
-<div id="content" class="container fullscreen">
-    <div class="row" id="teams-panel">
+                    {% if ranked_groups %}
+                        {% for group in ranked_groups %}
 
-        {% for group in ranked_groups %}
+                            <div class="team-panel">
+                                {% if group == top_group %}
+                                    <div class="panel panel-primary">
+                                {% else %}
+                                    <div class="panel panel-success">
+                                {% endif %}
+                                        <div class="panel-heading">{{ group.name }} </div>
+                                        <div class="panel-body">
+                                        <div class="div-team">
+                                            <ul>
+                                            {% for student in group.students.all %}
+                                                <li>{{ student.user.first_name }} {{ student.user.last_name }}</li>
+                                            {% endfor %}
+                                            </ul>
 
-        <div class="team-panel">
-            {% if group == top_group %}
-            <div class="panel panel-primary">
-                {% else %}
-                <div class="panel panel-success">
-                {% endif %}
-                <div class="panel-heading">{{ group.name }}</div>
-                <div class="panel-body">
-                    <div id="div-team">
-                        <ul>
-                            {% for student in group.students.all %}
-                            <li>{{ student.user.first_name }} {{ student.user.last_name }}</li>
-                            {% endfor %}
-                        </ul>
+                                            <p><a class="btn btn-default"
+                                            href="{% url 'select_team' group.pk %}"
+                                            role="button">Select</a></p>
+                                        </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
 
-                        <p><a class="btn btn-default"
-                              href="{% url 'select_team' group.pk %}"
-                              role="button">Select</a></p>
+                        <div class="team-panel">
+
+                            <div class="panel panel-success">
+
+                                <div class="panel-heading">No groups available</div>
+                                <div class="panel-body"> </div>
+                            </div>
+                        </div>
+
+                    {% endif %}
+
                     </div>
                 </div>
             </div>
         </div>
-        {% endfor %}
 
-
-    </div>
-</div>
 
 {% endblock %}
