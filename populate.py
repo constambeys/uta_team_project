@@ -138,31 +138,44 @@ def populate():
     instructors = Instructor.objects.all()
 
     r = create_requirement(1, 4, rated_qualifications[1], rated_qualifications[5], rated_qualifications[9])
-    a = create_assignment("Assessed Exercise 1", instructors[0], courses[0], r,[2016, 3, 25, 11, 06, 05], students[0], students[1], students[2],
+    k = create_requirement(1, 5, rated_qualifications[2], rated_qualifications[10], rated_qualifications[11])
+    a = create_assignment("Itech - Assessed Exercise 1", instructors[0], courses[0], r,[2016, 3, 25, 11, 06, 05], students[0], students[1], students[2],
                           students[22], students[5], students[6], students[7],
                           students[8], students[9],students[10],students[11],students[12],
                           students[13],students[14],students[15],students[16],students[17],
                           students[18],students[19],students[20],students[21])
-    b = create_assignment("Assessed Exercise 2", instructors[0], courses[0], r,[2016, 3, 29, 11, 06, 05], students[0], students[1], students[2],
+    b = create_assignment("Itech - Assessed Exercise 2", instructors[0], courses[0], r,[2016, 3, 29, 11, 06, 05], students[0], students[1], students[2],
                           students[3], students[4],students[5], students[6], students[7],
                           students[8], students[9],students[10],students[11],students[12],
                           students[13],students[14],students[15],students[16],students[17],
                           students[18],students[19],students[20],students[21])
-    c = create_assignment("Assessed Exercise 3", instructors[0], courses[0], r,[2016, 3, 30, 11, 06, 05], students[0], students[1], students[2],
+    c = create_assignment("Itech - Assessed Exercise 3", instructors[0], courses[0], r,[2016, 3, 30, 11, 06, 05], students[0], students[1], students[2],
+                          students[3], students[4],students[5], students[6], students[7],
+                          students[8], students[9],students[10],students[11],students[12],
+                          students[13],students[14],students[15],students[16],students[17],
+                          students[18],students[19],students[20],students[21])
+    d = create_assignment("Big Data - Assesed Exercise 1", instructors[0], courses[2], k,[2016, 3, 26, 11, 06, 05], students[0], students[1], students[2],
+                          students[3], students[4],students[5], students[6], students[7],
+                          students[8], students[9],students[10],students[11],students[12],
+                          students[13],students[14],students[15],students[16],students[17],
+                          students[18],students[19],students[20],students[21])
+    e = create_assignment("Big Data - Assesed Exercise 2", instructors[0], courses[2], k,[2016, 3, 31, 11, 06, 05], students[0], students[1], students[2],
                           students[3], students[4],students[5], students[6], students[7],
                           students[8], students[9],students[10],students[11],students[12],
                           students[13],students[14],students[15],students[16],students[17],
                           students[18],students[19],students[20],students[21])
 
-    create_group("Team UTaaa", a, students[15], students[16])
+    create_group("Team UTA", a, students[15], students[16])
     create_group("Team geeks", a, students[17])
     create_group("Team dudes", a, students[2], students[4])
-    create_group("Team dudies", a, students[5], students[6], students[7], students[8])
+    create_group("Team django", b, students[5], students[6], students[7])
     create_group("Team DA", a, students[9], students[10])
-    create_group("Team Nevis", a, students[11], students[12])
+    create_group("Team Nevis", b, students[11], students[12])
     create_group("Team Glasgow", a, students[13], students[14])
     create_group("Team Glasgow", b, students[13], students[14])
     create_group("Team Glasgow", c, students[13], students[14])
+    create_group("Team DS", d, students[10], students[9],students[3])
+    create_group("Team no1", c, students[16], students[15])
 
     requirements = Requirement.objects.all()
     assignments = Assignment.objects.all()
