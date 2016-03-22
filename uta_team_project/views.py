@@ -206,6 +206,7 @@ def assignment_create(request):
                 requirements.save()
                 rated_qualifs = rated_qualif_form.cleaned_data['rated_qualifications']
                 rated_qualifs = parse(rated_qualifs)
+
                 [requirements.rated_qualifications.add(rq) for rq in rated_qualifs]
                 requirements.save()
 
@@ -483,13 +484,17 @@ def studentprofile(request):
             profile_form = StudentUpdateForm(request.POST, instance=request.user.student)
             ratedQualification_form = RatedQualificationForm(data=request.POST)
             print profile_form
-            ratedQualification_form.is_valid()
-            if user_form.is_valid() and profile_form.is_valid() :
+
+            if user_form.is_valid() and profile_form.is_valid() and ratedQualification_form.is_valid():
                 user_form.save()
                 profile_form.save()
 
                 rated_qualifs = ratedQualification_form.cleaned_data['rated_qualifications']
                 rated_qualifs = parse(rated_qualifs)
+
+                if rated_qualifs == -1:
+                    return HttpResponseRedirect(reverse('error', kwargs={'message': "Invalid Rated Qualification!"}))
+
                 [request.user.student.rated_qualifications.add(rq) for rq in rated_qualifs]
                 request.user.student.save()
                 print 'saved'
@@ -502,7 +507,10 @@ def studentprofile(request):
             context_dict['user_form'] = user_form
             profile_form = StudentUpdateForm(instance=request.user.student)
             context_dict['profile_form'] = profile_form
-            ratedQualification_form =  RatedQualificationForm()
+            rated_qualif_str = ""
+            for rq in request.user.student.rated_qualifications.all():
+                rated_qualif_str += rq.qualification.name + " " + str(rq.rating) + "\n"
+            ratedQualification_form = RatedQualificationForm({'rated_qualifications': rated_qualif_str})
             context_dict['rated_qualif_form'] = ratedQualification_form
 
             return render(request, 'student_profile.html', context_dict)
@@ -510,6 +518,7 @@ def studentprofile(request):
     else:
         logout(request)  # Clear store session
         return HttpResponse("Oops something went wrong!!")
+
 
 @login_required
 def instructorprofile(request):
