@@ -535,13 +535,13 @@ def instructorprofile(request):
                 return HttpResponse("Oops something went wrong!!")
 
             return HttpResponseRedirect(reverse('instructorprofile'))
-        else:
-            user_form = UserUpdateForm(instance=request.user)
-            context_dict['user_form'] = user_form
-            profile_form = InstructorUpdateForm(instance=request.user.instructor)
-            context_dict['profile_form'] = profile_form
 
-            return render(request, 'instructor_profile.html', context_dict)
+        user_form = UserUpdateForm(instance=request.user)
+        context_dict['user_form'] = user_form
+        profile_form = InstructorUpdateForm(instance=request.user.instructor)
+        context_dict['profile_form'] = profile_form
+
+        return render(request, 'instructor_profile.html', context_dict)
 
     else:
         logout(request)  # Clear store session
