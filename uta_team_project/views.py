@@ -31,9 +31,15 @@ def index(request):
         else:
 
             print "Invalid login details: {0}, {1}".format(username, password)
-            return HttpResponse("Invalid login details supplied.")
+            return HttpResponseRedirect(reverse('error', kwargs={'message': "Invalid login details"}))
     else:
         return render(request, 'index.html', {})
+
+
+def error(request, message):
+    context_dict = {}
+    context_dict['message'] = message
+    return render(request, 'error.html', context_dict)
 
 
 @login_required
@@ -473,8 +479,6 @@ def studentprofile(request):
     if request.user.is_authenticated():
 
 
-
-        print 'BBB'
         # If it's a HTTP POST, we're interested in processing form data.
         if request.method == 'POST':
             # Attempt to grab information from the raw form information.
@@ -482,12 +486,12 @@ def studentprofile(request):
             user_form = UserForm(data=request.POST)
             print user_form
             profile_form = StudentForm(data=request.POST)
-            print 'aaa222'
+
             # If the two forms are valid...
-            if user_form.is_valid():
+            if user_form.is_valid() and profile_form.is_valid():
                 # Save the user's form data to the database.
 
-                user = User.objects.get(username=user_form.cleaned_data['username'])
+                user = User.objects.get(username=request.user.username)
 
                 print user
                 user = user_form.save()
@@ -529,14 +533,13 @@ def studentprofile(request):
             user = request.user
             if hasattr(request.user, 'student'):
                 profile = request.user.student
-                print 'TEEEEEEST'
 
                 form = UserForm(initial={'username': user.username,
                                          'first_name': user.first_name,
                                          'last_name': user.last_name,
-                                         'email': "geo@gmai.com" ,
-                                         'password':user.password})
-                form.fields['username'].widget.attrs['readonly'] = True
+                                         'email': "geo@gmail.com" ,
+                                         'password': user.password})
+                # form.fields['username'].widget.attrs['readonly'] = 'True'
                 context_dict['User'] = user.username
                 profile_form = StudentForm(initial={'matriculationNumber': profile.matriculationNumber,
                                                     'department': profile.department,
