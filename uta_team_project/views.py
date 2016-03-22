@@ -501,19 +501,17 @@ def studentprofile(request):
             else:
                 return HttpResponse("Oops something went wrong!!")
 
-            return render(request, 'student_profile.html', context_dict)
-        else:
-            user_form = UserUpdateForm(instance=request.user)
-            context_dict['user_form'] = user_form
-            profile_form = StudentUpdateForm(instance=request.user.student)
-            context_dict['profile_form'] = profile_form
-            rated_qualif_str = ""
-            for rq in request.user.student.rated_qualifications.all():
-                rated_qualif_str += rq.qualification.name + " " + str(rq.rating) + "\n"
-            ratedQualification_form = RatedQualificationForm({'rated_qualifications': rated_qualif_str})
-            context_dict['rated_qualif_form'] = ratedQualification_form
+        user_form = UserUpdateForm(instance=request.user)
+        context_dict['user_form'] = user_form
+        profile_form = StudentUpdateForm(instance=request.user.student)
+        context_dict['profile_form'] = profile_form
+        rated_qualif_str = ""
+        for rq in request.user.student.rated_qualifications.all():
+            rated_qualif_str += rq.qualification.name + " " + str(rq.rating) + "\n"
+        ratedQualification_form = RatedQualificationForm({'rated_qualifications': rated_qualif_str})
+        context_dict['rated_qualif_form'] = ratedQualification_form
 
-            return render(request, 'student_profile.html', context_dict)
+        return render(request, 'student_profile.html', context_dict)
 
     else:
         logout(request)  # Clear store session
