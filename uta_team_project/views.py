@@ -13,7 +13,6 @@ from MyCalendar import MyCalendar
 from Matching import Matching
 
 
-
 def index(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -31,7 +30,7 @@ def index(request):
         else:
 
             print "Invalid login details: {0}, {1}".format(username, password)
-            return HttpResponseRedirect(reverse('error', kwargs={'message': "Invalid login details"}))
+            return HttpResponseRedirect(reverse('error', kwargs={'message': "Invalid login details!"}))
     else:
         return render(request, 'index.html', {})
 
@@ -51,7 +50,7 @@ def home(request):
             return instructor_home(request)
         else:
             logout(request)  # Clear store session
-            return HttpResponse("Oops something went wrong!!")
+            return HttpResponse("Oops something went wrong!!!")
     else:
         return HttpResponse("Not logged in!")
 
@@ -61,7 +60,7 @@ def find_team(request, assignment_id):
     student = request.user.student
     my_group = student.group_set.filter(assignment_id=assignment_id)
     if my_group.count() != 0:
-        return HttpResponse("Sorry you are already in a group")
+        return HttpResponse("Sorry you are already in a group!")
 
     context_dict = {}
     # The assignment that the user has selected
@@ -409,6 +408,7 @@ def notification_accept(request, group_id):
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
 
+
 @login_required
 def notification_reject(request, group_id):
     # ------------------------------use populate.py script--------------------------
@@ -433,6 +433,7 @@ def notification_reject(request, group_id):
             return HttpResponse("Fail")
     else:
         return HttpResponse("Since you're logged in, you can see this text!")
+
 
 @login_required
 def restricted(request):
@@ -471,13 +472,12 @@ def uta_users(request):
 def help(request):
     return render(request, 'help.html', {})
 
+
 @login_required
 def studentprofile(request):
-
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
     if request.user.is_authenticated():
-
 
         # If it's a HTTP POST, we're interested in processing form data.
         if request.method == 'POST':
@@ -528,7 +528,7 @@ def studentprofile(request):
         # These forms will be blank, ready for user input.
         else:
 
-             # Construct a dictionary to pass to the template engine as its context.
+            # Construct a dictionary to pass to the template engine as its context.
 
             user = request.user
             if hasattr(request.user, 'student'):
@@ -537,7 +537,7 @@ def studentprofile(request):
                 form = UserForm(initial={'username': user.username,
                                          'first_name': user.first_name,
                                          'last_name': user.last_name,
-                                         'email': "geo@gmail.com" ,
+                                         'email': "geo@gmail.com",
                                          'password': user.password})
                 # form.fields['username'].widget.attrs['readonly'] = 'True'
                 context_dict['User'] = user.username
@@ -549,5 +549,5 @@ def studentprofile(request):
             context_dict['user_form'] = form
             context_dict['profile_form'] = profile_form
 
-        # Render the template depending on the context.
+            # Render the template depending on the context.
     return render(request, 'student_profile.html', context_dict)
