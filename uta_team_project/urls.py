@@ -20,5 +20,6 @@ urlpatterns = patterns('',
     url(r'^uta_users/', views.uta_users, name='uta_users'),
     url(r'^help/', views.help, name='help'),
     url(r'^studentprofile/', views.studentprofile, name='studentprofile'),
+    url(r'^instructorprofile/', views.instructorprofile, name='instructorprofile'),
     url(r'^error/(?P<message>.*)/', views.error, name='error'),
 )

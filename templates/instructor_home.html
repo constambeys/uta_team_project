@@ -14,7 +14,7 @@
         <ul class="nav navbar-nav navbar-right">
             <li class="active"><a href="#">Home</a></li>
             <li><a href="{% url 'assignment_create' %}" style="margin-right: 40px">Create Assignment</a></li>
-            <li><a href="#profile">{{ username }}</a></li>
+            <li><a href="{%url 'instructorprofile' %}">{{ username }}</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
     </div>

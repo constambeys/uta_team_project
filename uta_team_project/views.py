@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from forms import *
-from uta_auth.forms import UserForm, StudentForm
+from uta_auth.forms import UserForm, StudentForm, UserUpdateForm, StudentUpdateForm, InstructorUpdateForm
 from uta_models.models import Student
 from django.utils.safestring import mark_safe
 import calendar
@@ -471,83 +471,69 @@ def uta_users(request):
 def help(request):
     return render(request, 'help.html', {})
 
+
 @login_required
 def studentprofile(request):
-
-    # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
     if request.user.is_authenticated():
 
-
-        # If it's a HTTP POST, we're interested in processing form data.
         if request.method == 'POST':
-            # Attempt to grab information from the raw form information.
-            # Note that we make use of both UserForm and UserProfileForm.
-            user_form = UserForm(data=request.POST)
-            print user_form
-            profile_form = StudentForm(data=request.POST)
+            user_form = UserUpdateForm(request.POST, instance=request.user)
+            profile_form = StudentUpdateForm(request.POST, instance=request.user.student)
+            ratedQualification_form = RatedQualificationForm(data=request.POST)
+            print profile_form
+            if user_form.is_valid() and profile_form.is_valid() and ratedQualification_form.is_valid():
+                user_form.save()
+                profile_form.save()
 
-            # If the two forms are valid...
-            if user_form.is_valid() and profile_form.is_valid():
-                # Save the user's form data to the database.
-
-                user = User.objects.get(username=request.user.username)
-
-                print user
-                user = user_form.save()
-
-                # Now we hash the password with the set_password method.
-                # Once hashed, we can update the user object.
-                user.set_password(user.password)
-                user.save()
-
-                # Now sort out the UserProfile instance.
-                # Since we need to set the user attribute ourselves, we set commit=False.
-                # This delays saving the model until we're ready to avoid integrity problems.
-                profile = profile_form.save(commit=False)
-                profile.user = user
-
-                # Did the user provide a profile picture?
-                # If so, we need to get it from the input form and put it in the UserProfile model.
-                # if 'picture' in request.FILES:
-                #   profile.picture = request.FILES['picture']
-
-                # Now we save the UserProfile model instance.
-                profile.save()
-                print 'aaa'
-
-
-            # Invalid form or forms - mistakes or something else?
-            # Print problems to the terminal.
-            # They'll also be shown to the user.
+                rated_qualifs = ratedQualification_form.cleaned_data['rated_qualifications']
+                rated_qualifs = parse(rated_qualifs)
+                [request.user.student.rated_qualifications.add(rq) for rq in rated_qualifs]
+                request.user.student.save()
+                print 'saved'
             else:
+                return HttpResponse("Oops something went wrong!!")
 
-                print user_form.errors, profile_form.errors
-
-        # Not a HTTP POST, so we render our form using two ModelForm instances.
-        # These forms will be blank, ready for user input.
+            return render(request, 'student_profile.html', context_dict)
         else:
+            user_form = UserUpdateForm(instance=request.user)
+            context_dict['user_form'] = user_form
+            profile_form = StudentUpdateForm(instance=request.user.student)
+            context_dict['profile_form'] = profile_form
+            ratedQualification_form =  RatedQualificationForm()
+            context_dict['rated_qualif_form'] = ratedQualification_form
 
-             # Construct a dictionary to pass to the template engine as its context.
+            return render(request, 'student_profile.html', context_dict)
 
-            user = request.user
-            if hasattr(request.user, 'student'):
-                profile = request.user.student
+    else:
+        logout(request)  # Clear store session
+        return HttpResponse("Oops something went wrong!!")
 
-                form = UserForm(initial={'username': user.username,
-                                         'first_name': user.first_name,
-                                         'last_name': user.last_name,
-                                         'email': "geo@gmail.com" ,
-                                         'password': user.password})
-                # form.fields['username'].widget.attrs['readonly'] = 'True'
-                context_dict['User'] = user.username
-                profile_form = StudentForm(initial={'matriculationNumber': profile.matriculationNumber,
-                                                    'department': profile.department,
-                                                    'lvlOfStudy': profile.lvlOfStudy})
+@login_required
+def instructorprofile(request):
+    context_dict = {}
+    if request.user.is_authenticated():
 
-            # Adds our results list to the template context under name pages.
-            context_dict['user_form'] = form
+        if request.method == 'POST':
+            user_form = UserUpdateForm(request.POST, instance=request.user)
+            profile_form = InstructorUpdateForm(request.POST, instance=request.user.instructor)
+            print profile_form
+            if user_form.is_valid() and profile_form.is_valid():
+                user_form.save()
+                profile_form.save()
+                print 'saved'
+            else:
+                return HttpResponse("Oops something went wrong!!")
+
+            return render(request, 'instructor_profile.html', context_dict)
+        else:
+            user_form = UserUpdateForm(instance=request.user)
+            context_dict['user_form'] = user_form
+            profile_form = InstructorUpdateForm(instance=request.user.instructor)
             context_dict['profile_form'] = profile_form
 
-        # Render the template depending on the context.
-    return render(request, 'student_profile.html', context_dict)
+            return render(request, 'instructor_profile.html', context_dict)
+
+    else:
+        logout(request)  # Clear store session
+        return HttpResponse("Oops something went wrong!!")

@@ -49,7 +49,7 @@
                     {% else %}
 
                         <div id="form1">
-                            <form id="user_form" method="post" action="{% url 'studentprofile' %}"
+                            <form id="user_form" method="post" action="{% url 'instructorprofile' %}"
                                   enctype="multipart/form-data">
 
                                 {% csrf_token %}
@@ -62,17 +62,7 @@
 
                                 {% endfor %}
 
-                                {% for field in profile_form %}
-                                    {{ field.errors }}
-                                    {{ field.non_field_errors }}
-                                    {{ field.label_tag }} {{ field }}
-                                {% endfor %}
 
-                                  {% for field in rated_qualif_form %}
-                                    {{ field.errors }}
-                                    {{ field.non_field_errors }}
-                                    {{ field.label_tag }} {{ field }}
-                                {% endfor %}
 
                                 <!-- Provide a button to click to submit the form. -->
                                 <input id="submit" type="submit" name="submit" value="Save Profile"/>
