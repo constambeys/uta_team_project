@@ -108,15 +108,11 @@ def student_home(request):
         context_dict = {}
         user = request.user
 
-        context_dict['username'] = user.username
-        context_dict['assignments'] = Assignment.objects.filter(students__user=user)
-        context_dict['groups'] = Group.objects.filter(students__user=user)
-
         profile = request.user.student
         assignments = profile.assignment_set.all()
 
         context_dict['username'] = user.username
-        context_dict['assignments'] = Assignment.objects.filter(students__user=user)
+        context_dict['assignments'] = Assignment.objects.filter(students__user=user).order_by('deadline')
         context_dict['groups'] = Group.objects.filter(students__user=user)
 
         htmlStr = MyCalendar(firstweekday=calendar.SUNDAY, assignments=assignments).formatmonth(date.today().year,
