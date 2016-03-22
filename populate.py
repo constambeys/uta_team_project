@@ -139,7 +139,7 @@ def populate():
 
     r = create_requirement(1, 4, rated_qualifications[1], rated_qualifications[5], rated_qualifications[9])
     a = create_assignment("Assessed Exercise 1", instructors[0], courses[0], r,[2016, 3, 25, 11, 06, 05], students[0], students[1], students[2],
-                          students[3], students[4],students[5], students[6], students[7],
+                          students[22], students[5], students[6], students[7],
                           students[8], students[9],students[10],students[11],students[12],
                           students[13],students[14],students[15],students[16],students[17],
                           students[18],students[19],students[20],students[21])

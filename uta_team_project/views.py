@@ -482,7 +482,8 @@ def studentprofile(request):
             profile_form = StudentUpdateForm(request.POST, instance=request.user.student)
             ratedQualification_form = RatedQualificationForm(data=request.POST)
             print profile_form
-            if user_form.is_valid() and profile_form.is_valid() and ratedQualification_form.is_valid():
+            ratedQualification_form.is_valid()
+            if user_form.is_valid() and profile_form.is_valid() :
                 user_form.save()
                 profile_form.save()
 
@@ -525,7 +526,7 @@ def instructorprofile(request):
             else:
                 return HttpResponse("Oops something went wrong!!")
 
-            return render(request, 'instructor_profile.html', context_dict)
+            return HttpResponseRedirect(reverse('instructorprofile'))
         else:
             user_form = UserUpdateForm(instance=request.user)
             context_dict['user_form'] = user_form
@@ -537,3 +538,4 @@ def instructorprofile(request):
     else:
         logout(request)  # Clear store session
         return HttpResponse("Oops something went wrong!!")
+
