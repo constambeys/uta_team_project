@@ -41,7 +41,7 @@
             </div>
 
             <div class="container" style="padding-top: 10px">
-                <div class="row col-sm-8 col-sm-offset-2 form-background">
+                <div class="row col-sm-10 col-sm-offset-1 form-background">
 
                     {% if registered %}
                         <strong>Thank you for registering!</strong>
@@ -53,29 +53,35 @@
                                   enctype="multipart/form-data">
 
                                 {% csrf_token %}
+                                <div class="col-sm-6">
+                                    {% for field in user_form %}
+                                        {{ field.errors }}
+                                        {{ field.non_field_errors }}
 
-                                {% for field in user_form %}
-                                    {{ field.errors }}
-                                    {{ field.non_field_errors }}
+                                        {{ field.label_tag }} {{ field }}
 
-                                    {{ field.label_tag }} {{ field }}
-
-                                {% endfor %}
+                                    {% endfor %}
 
                                 {% for field in profile_form %}
-                                    {{ field.errors }}
-                                    {{ field.non_field_errors }}
-                                    {{ field.label_tag }} {{ field }}
-                                {% endfor %}
-
-                                  {% for field in rated_qualif_form %}
-                                    {{ field.errors }}
-                                    {{ field.non_field_errors }}
-                                    {{ field.label_tag }} {{ field }}
-                                {% endfor %}
-
+                                        {{ field.errors }}
+                                    <br>
+                                        {{ field.non_field_errors }}
+                                    <br>
+                                        {{ field.label_tag }} {{ field }}
+                                    {% endfor %}
                                 <!-- Provide a button to click to submit the form. -->
                                 <input id="submit" type="submit" name="submit" value="Save Profile"/>
+                                </div>
+                                <div class="col-sm-6">
+
+
+                                    {% for field in rated_qualif_form %}
+                                        {{ field.errors }}
+                                        {{ field.non_field_errors }}
+                                        {{ field.label_tag }} <br> {{ field }}
+                                    {% endfor %}
+                                </div>
+
                             </form>
                         </div>
                     {% endif %}
