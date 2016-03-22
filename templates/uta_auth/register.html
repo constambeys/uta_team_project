@@ -11,9 +11,14 @@
 {% block navbar %}
 
     <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-right" style="padding-top:5px">
-            <li><h4 style="color: white;">User Registration</h4></li>
-        </ul>
+        <div class="navbar-form navbar-right">
+            {% csrf_token %}
+            <a class="btn btn-success" href="{% url 'about-us' %}">About us</a>
+            <a class="btn btn-success" href="{% url 'uta_users' %}">Who uses UTA?</a>
+            <a class="btn btn-success" href="{% url 'index' %}#features">Features</a>
+            <a class="btn btn-success" href="{% url 'help' %}">Help</a>
+        </div>
+
 
     </div><!--/.navbar-collapse -->
 
@@ -22,7 +27,12 @@
 {% block body %}
     <div class="jumbotron" style="padding: 0px">
         <div class="container img-background" style="width:100%; margin: 0px;">
-            <div class="container fullscreen" style="padding-top:170px">
+            <div class="container fullscreen" style="padding-top:130px">
+                <div class="title" style="text-align:center" ;>
+                    <h2 style="color: black;">User Registration</h2><br>
+                </div>
+                <br>
+
                 <div class="col-sm-4 col-sm-offset-2">
                     <div class="panel panel-success">
                         <div class="panel-heading">

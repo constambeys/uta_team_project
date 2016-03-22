@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block custom-style %}
-<link rel="stylesheet" type="text/css" href="{% static 'styles/register_user.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/register_user.css' %}"/>
 {% endblock %}
 
 {% block title %} User Registration {% endblock %}
@@ -14,40 +14,62 @@
 
 {% block navbar %}
 
-<div id="navbar" class="navbar-collapse collapse">
+    <div id="navbar" class="navbar-collapse collapse">
+        <div class="navbar-form navbar-right">
+            {% csrf_token %}
+            <a class="btn btn-success" href="{% url 'about-us' %}">About us</a>
+            <a class="btn btn-success" href="{% url 'uta_users' %}">Who uses UTA?</a>
+            <a class="btn btn-success" href="{% url 'index' %}#features">Features</a>
+            <a class="btn btn-success" href="{% url 'help' %}">Help</a>
+        </div>
 
-</div><!--/.navbar-collapse -->
+
+    </div><!--/.navbar-collapse -->
 
 {% endblock %}
 
 {% block body %}
+    <div class="jumbotron" style="padding: 0px">
+        <div class="container img-background" style="width:100%; margin: 0px;">
+            <div class="title" style="text-align:center";>
+            <h2 style="color: black;">User Registration</h2>
+            </div>
 
-{% if registered %}
-<strong>Thank you for registering!</strong>
-<a href="{% url 'index' %}">Return to the homepage.</a><br/>
-{% else %}
+            <div class="container" style="padding-top: 20px">
+                <div class="row col-sm-8 col-sm-offset-2 form-background">
 
-<div id="form1">
-    <form id="user_form" method="post" action="{% url 'register_user' user_type %}"
-          enctype="multipart/form-data">
+                    {% if registered %}
+                        <strong>Thank you for registering!</strong>
+                        <a href="{% url 'index' %}">Return to the homepage.</a><br/>
+                    {% else %}
 
-        {% csrf_token %}
+                        <div id="form1">
+                            <form id="user_form" method="post" action="{% url 'register_user' user_type %}"
+                                  enctype="multipart/form-data">
 
-        {% for field in user_form %}
-        {{ field.errors }}
-        {{ field.label_tag }} {{ field }}
+                                {% csrf_token %}
 
-        {% endfor %}
+                                {% for field in user_form %}
+                                    {{ field.errors }}
+                                    {{ field.label_tag }} {{ field }}
 
-        {% for field in profile_form %}
-        {{ field.errors }}
-        {{ field.label_tag }} {{ field }}
-        {% endfor %}
+                                {% endfor %}
 
-        <!-- Provide a button to click to submit the form. -->
-        <input id="submit" type="submit" name="submit" value="Register"/>
-    </form>
-</div>
-{% endif %}
+                                {% for field in profile_form %}
+                                    {{ field.errors }}
+                                    {{ field.label_tag }} {{ field }}
+                                {% endfor %}
+
+                                <!-- Provide a button to click to submit the form. -->
+                                <input id="submit" type="submit" name="submit" value="Register"/>
+
+                            </form>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+
+                    {% endif %}
 
 {% endblock %}
