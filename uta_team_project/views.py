@@ -51,9 +51,9 @@ def home(request):
             return instructor_home(request)
         else:
             logout(request)  # Clear store session
-            return HttpResponse("Oops something went wrong!!")
+            return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
     else:
-        return HttpResponse("Not logged in!")
+        return HttpResponseRedirect(reverse('error', kwargs={'message': "Not logged in!"}))
 
 
 @login_required
@@ -92,14 +92,15 @@ def select_team(request, team_id):
                 team.students.add(request.user.student)
                 team.save()
             else:
-                return HttpResponse("Cannot complete operation. This team is now full!")
+                return HttpResponseRedirect(
+                    reverse('error',kwargs={'message': "Cannot complete operation. This team is now full!"}))
 
             return HttpResponseRedirect(reverse('home'))
         else:
             logout(request)  # Clear store session
-            return HttpResponse("Oops something went wrong!!")
+            return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
     else:
-        return HttpResponse("Not logged in!")
+        return HttpResponseRedirect(reverse('error', kwargs={'message': "Not logged in!"}))
 
 
 def student_home(request):
@@ -124,7 +125,7 @@ def student_home(request):
 
         return render(request, 'student_home.html', context_dict)
     else:
-        return HttpResponse("Not logged in!")
+        return HttpResponseRedirect(reverse('error', kwargs={'message': "Not logged in!"}))
 
 
 def instructor_home(request):
@@ -151,7 +152,7 @@ def instructor_home(request):
 
         return render(request, 'instructor_home.html', context_dict)
     else:
-        return HttpResponse("Since you're logged in, you can see this text!")
+        return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
 
 
 def parse(rated_qualifs):
@@ -272,7 +273,7 @@ def assignment_view(request, assignment_id):
             user_type = "instructor"
         else:
             logout(request)  # Clear store session
-            return HttpResponse("Oops something went wrong!!")
+            return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
 
         # Return a rendered response to send to the client.
         context_dict['user_type'] = user_type
@@ -285,7 +286,7 @@ def assignment_view(request, assignment_id):
         context_dict['no_group'] = getNoGroup(assignment)
         return render(request, 'assignment_view.html', context_dict)
     else:
-        return HttpResponse("Since you're logged in, you can see this text!")
+        return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
 
 
 @login_required
@@ -356,7 +357,7 @@ def notifications_view(request):
             user_type = "student"
         else:
             logout(request)  # Clear store session
-            return HttpResponse("Oops something went wrong!!")
+            return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
 
         # Return a rendered response to send to the client.
 
@@ -373,7 +374,7 @@ def notifications_view(request):
         context_dict['not_accepted'] = not_accepted
         return render(request, 'notifications.html', context_dict)
     else:
-        return HttpResponse("Since you're logged in, you can see this text!")
+        return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
 
 
 @login_required
@@ -390,7 +391,7 @@ def notification_accept(request, group_id):
             user_type = "student"
         else:
             logout(request)  # Clear store session
-            return HttpResponse("Oops something went wrong!!")
+            return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
 
         try:
             group = Group.objects.get(id=group_id)
@@ -409,7 +410,8 @@ def notification_accept(request, group_id):
         except:
             return HttpResponse("Fail")
     else:
-        return HttpResponse("Since you're logged in, you can see this text!")
+        return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
+
 
 @login_required
 def notification_reject(request, group_id):
@@ -425,7 +427,7 @@ def notification_reject(request, group_id):
             user_type = "student"
         else:
             logout(request)  # Clear store session
-            return HttpResponse("Oops something went wrong!!")
+            return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
 
         try:
             group = Group.objects.get(id=group_id)
@@ -434,7 +436,8 @@ def notification_reject(request, group_id):
         except:
             return HttpResponse("Fail")
     else:
-        return HttpResponse("Since you're logged in, you can see this text!")
+        return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
+
 
 @login_required
 def restricted(request):
@@ -499,7 +502,7 @@ def studentprofile(request):
                 request.user.student.save()
                 print 'saved'
             else:
-                return HttpResponse("Oops something went wrong!!")
+                return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
 
         user_form = UserUpdateForm(instance=request.user)
         context_dict['user_form'] = user_form
@@ -515,7 +518,7 @@ def studentprofile(request):
 
     else:
         logout(request)  # Clear store session
-        return HttpResponse("Oops something went wrong!!")
+        return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
 
 
 @login_required
@@ -532,7 +535,7 @@ def instructorprofile(request):
                 profile_form.save()
                 print 'saved'
             else:
-                return HttpResponse("Oops something went wrong!!")
+                return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
 
             return HttpResponseRedirect(reverse('instructorprofile'))
 
@@ -545,5 +548,5 @@ def instructorprofile(request):
 
     else:
         logout(request)  # Clear store session
-        return HttpResponse("Oops something went wrong!!")
+        return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
 
