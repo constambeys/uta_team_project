@@ -34,3 +34,8 @@ class RequirementsForm(forms.ModelForm):
 
 class CourseAssignmentForm(forms.Form):
     course_assignment = forms.ModelChoiceField(queryset=Assignment.objects.all().order_by('name'))
+
+class RatedQualificationForm(forms.ModelForm):
+    class Meta:
+        model = RatedQualification
+        fields = ('qualification', 'rating')

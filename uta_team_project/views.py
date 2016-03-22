@@ -310,22 +310,24 @@ def studentprofile(request):
             form = UserForm(initial={'username': user.username,
                                      'first_name': user.first_name,
                                      'last_name': user.last_name,
-                                     'email': user.email})
+                                     'email': user.email,
+                                     'password':user.password})
+            form.fields['username'].widget.attrs['readonly'] = True
+            context_dict['User'] = user.username
             profile_form = StudentForm(initial={'matriculationNumber': profile.matriculationNumber,
                                                 'department': profile.department,
                                                 'lvlOfStudy': profile.lvlOfStudy})
 
-
-
+        print 'BBB'
         # If it's a HTTP POST, we're interested in processing form data.
         if request.method == 'POST':
             # Attempt to grab information from the raw form information.
             # Note that we make use of both UserForm and UserProfileForm.
             user_form = UserForm(data=request.POST)
             profile_form = StudentForm(data=request.POST)
-
+            print 'aaa222'
             # If the two forms are valid...
-            if user_form.is_valid() and profile_form.is_valid():
+            if  profile_form.is_valid():
                 # Save the user's form data to the database.
                 user = user_form.save()
 
@@ -347,7 +349,7 @@ def studentprofile(request):
 
                 # Now we save the UserProfile model instance.
                 profile.save()
-
+                print 'aaa'
 
 
             # Invalid form or forms - mistakes or something else?
@@ -369,4 +371,4 @@ def studentprofile(request):
 
 
         # Render the template depending on the context.
-    return render(request, 'uta_auth/student_profile.html', context_dict)
+    return render(request, 'student_profile.html', context_dict)

@@ -25,13 +25,14 @@
 {% else %}
 
 <div id="form1">
-    <form id="user_form" method="post" action="{% url 'register_user' user_type %}"
+    <form id="user_form" method="post" action="{% url 'studentprofile' %}"
           enctype="multipart/form-data">
 
         {% csrf_token %}
 
         {% for field in user_form %}
         {{ field.errors }}
+
         {{ field.label_tag }} {{ field }}
 
         {% endfor %}
@@ -42,7 +43,7 @@
         {% endfor %}
 
         <!-- Provide a button to click to submit the form. -->
-        <input id="submit" type="submit" name="submit" value="Register"/>
+        <input id="submit" type="submit" name="submit" value="Save Profile"/>
     </form>
 </div>
 {% endif %}
