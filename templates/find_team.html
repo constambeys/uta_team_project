@@ -37,10 +37,12 @@
                             <div class="team-panel">
                                 {% if group == top_group %}
                                     <div class="panel panel-primary">
+                                        <div class="panel-heading">Best Match : {{ group.name }} </div>
                                 {% else %}
                                     <div class="panel panel-success">
-                                {% endif %}
                                         <div class="panel-heading">{{ group.name }} </div>
+                                {% endif %}
+
                                         <div class="panel-body">
                                         <div class="div-team">
                                             <ul>
