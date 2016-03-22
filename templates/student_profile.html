@@ -4,6 +4,34 @@
 
 {% block custom-style %}
     <link rel="stylesheet" type="text/css" href="{% static 'styles/student_profile.css' %}"/>
+
+    <script>
+        function loadHTML() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (xhttp.readyState == 4 && xhttp.status == 200) {
+                    document.getElementById("ajax_block").innerHTML = xhttp.responseText;
+                }
+            };
+            xhttp.open("GET", "{% url 'notifications_view' %}", true);
+            xhttp.send();
+        }
+
+        function acceptORreject(group_id, accept) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (xhttp.readyState == 4 && xhttp.status == 200) {
+
+                }
+            };
+            if (accept) {
+                xhttp.open("GET", "notification_accept/" + group_id + "/", true);
+            } else {
+                xhttp.open("GET", "notification_reject/" + group_id + "/", true);
+            }
+            xhttp.send();
+        }
+    </script>
 {% endblock %}
 
 {% block title %} User Registration {% endblock %}
@@ -62,15 +90,15 @@
 
                                     {% endfor %}
 
-                                {% for field in profile_form %}
+                                    {% for field in profile_form %}
                                         {{ field.errors }}
-                                    <br>
+                                        <br>
                                         {{ field.non_field_errors }}
-                                    <br>
+                                        <br>
                                         {{ field.label_tag }} {{ field }}
                                     {% endfor %}
-                                <!-- Provide a button to click to submit the form. -->
-                                <input id="submit" type="submit" name="submit" value="Save Profile"/>
+                                    <!-- Provide a button to click to submit the form. -->
+                                    <input id="submit" type="submit" name="submit" value="Save Profile"/>
                                 </div>
                                 <div class="col-sm-6">
 
