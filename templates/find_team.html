@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+
 {% load static %}
 
 {% block custom-style %}
@@ -17,7 +18,7 @@
             <li><a href="{% url 'team_create' assignment.id %}">Create team</a></li>
             <li class="active"><a href="{% url 'find_team' assignment.id %}" style="margin-right: 40px">Find team</a>
             </li>
-            <li><a href="#profile"> {{ username }}</a></li>
+            <li><a href="{% url 'studentprofile' %}">{{ username }}</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
     </div><!--/.navbar-collapse -->

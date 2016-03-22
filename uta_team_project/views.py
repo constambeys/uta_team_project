@@ -78,6 +78,7 @@ def find_team(request, assignment_id):
     if len(ranked_groups) > 0:
         context_dict['top_group'] = ranked_groups[0]
     context_dict['assignment'] = assignment
+    context_dict['username'] = request.user.username
     return render(request, 'find_team.html', context_dict)
 
 
