@@ -1,0 +1,49 @@
+.form-background {
+    border-radius: 5px;
+    background-color: rgba(215, 215, 215, 0.8);
+    padding: 40px;
+}
+
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+div > img {
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.img-background {
+    background-image: url("/static/images/lights.png");
+    background-position: center;
+    background-size: cover;
+    height: 800px;
+}
+
+input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}

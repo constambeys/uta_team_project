@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block custom-style %}
-<link rel="stylesheet" type="text/css" href="{% static 'styles/register_user.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/student_profile.css' %}"/>
 {% endblock %}
 
 {% block title %} User Registration {% endblock %}
@@ -11,43 +11,71 @@
 
 {% block navbar %}
 
-<div id="navbar" class="navbar-collapse collapse">
+    <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href="{% url 'home' %}" style="margin-right: 40px">Home</a></li>
+            <li class="dropdown">
+                <a onClick="loadHTML(); return false;" href="#" class="dropdown-toggle" data-toggle="dropdown">Notifications
+                    <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <ul id="ajax_block" class="list-inline" style="width: 500px">
 
-</div><!--/.navbar-collapse -->
+
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div><!--/.navbar-collapse -->
 
 {% endblock %}
 
 {% block body %}
+    <div class="jumbotron" style="padding: 0px">
+        <div class="container img-background" style="width:100%; margin: 0px;">
 
-{% if registered %}
-<strong>Thank you for registering!</strong>
-<a href="{% url 'index' %}">Return to the homepage.</a><br/>
-{% else %}
+            <div class="title" style="text-align:center" ;>
+                <h2 style="color: black;">My Profile</h2>
+            </div>
 
-<div id="form1">
-    <form id="user_form" method="post" action="{% url 'studentprofile' %}"
-          enctype="multipart/form-data">
+            <div class="container" style="padding-top: 10px">
+                <div class="row col-sm-8 col-sm-offset-2 form-background">
 
-        {% csrf_token %}
+                    {% if registered %}
+                        <strong>Thank you for registering!</strong>
+                        <a href="{% url 'index' %}">Return to the homepage.</a><br/>
+                    {% else %}
 
-        {% for field in user_form %}
-        {{ field.errors }}
-        {{ field.non_field_errors }}
+                        <div id="form1">
+                            <form id="user_form" method="post" action="{% url 'studentprofile' %}"
+                                  enctype="multipart/form-data">
 
-        {{ field.label_tag }} {{ field }}
+                                {% csrf_token %}
 
-        {% endfor %}
+                                {% for field in user_form %}
+                                    {{ field.errors }}
+                                    {{ field.non_field_errors }}
 
-        {% for field in profile_form %}
-        {{ field.errors }}
-        {{ field.non_field_errors }}
-        {{ field.label_tag }} {{ field }}
-        {% endfor %}
+                                    {{ field.label_tag }} {{ field }}
 
-        <!-- Provide a button to click to submit the form. -->
-        <input id="submit" type="submit" name="submit" value="Save Profile"/>
-    </form>
-</div>
-{% endif %}
+                                {% endfor %}
+
+                                {% for field in profile_form %}
+                                    {{ field.errors }}
+                                    {{ field.non_field_errors }}
+                                    {{ field.label_tag }} {{ field }}
+                                {% endfor %}
+
+                                <!-- Provide a button to click to submit the form. -->
+                                <input id="submit" type="submit" name="submit" value="Save Profile"/>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
