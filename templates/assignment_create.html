@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load staticfiles %}
+
 {% block custom-style %}
 <link rel="stylesheet" type="text/css" href="{% static 'styles/assignment_create.css' %}"/>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -9,11 +11,6 @@
 <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
 <script type="text/javascript">
     stLight.options({publisher: "48952996-13d3-49f3-9854-e6438041a4b3", doNotHash: false, doNotCopy: false, hashAddressBar: false});
-
-
-
-
-
 </script>
 <meta property="og:description"
       content="Bootstrap django-datetime-widget is a simple and clean widget for DateField, Timefiled and DateTimeField in Django framework. It is based on Bootstrap datetime picker, supports both Bootstrap 3 and Bootstrap 2"/>
@@ -23,6 +20,9 @@
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 <!-- Latest compiled and minified JavaScript -->
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css"/>
+<script src="{% static 'js/bootstrap.js' %}"></script>
 
 
 {% if datetime_form %}
