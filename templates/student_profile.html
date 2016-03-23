@@ -100,7 +100,7 @@
                                     <!-- Provide a button to click to submit the form. -->
                                     <input id="submit" type="submit" name="submit" value="Save Profile"/>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" style="text-align:center">
 
 
                                     {% for field in rated_qualif_form %}
@@ -108,6 +108,7 @@
                                         {{ field.non_field_errors }}
                                         {{ field.label_tag }} <br> {{ field }}
                                     {% endfor %}
+
                                 </div>
 
                             </form>
