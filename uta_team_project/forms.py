@@ -41,7 +41,7 @@ class CourseAssignmentForm(forms.Form):
 
 class RatedQualificationForm(forms.Form):
     rated_qualifications = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'e.g. Python 3',
-                                                                        'cols': 50,
+                                                                        'cols': 30,
                                                                         'rows': 15}))
 
 
