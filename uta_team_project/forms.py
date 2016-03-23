@@ -17,6 +17,7 @@ class GroupForm(forms.ModelForm):
         self.fields['students'].queryset = students_qs
         self.limit = limit
 
+
     def clean_students(self):
         students = self.cleaned_data['students']
         if students.count() > self.limit:

@@ -133,7 +133,7 @@ def instructor_home(request):
         profile = request.user.instructor
         courses = []
         deadlines = []
-        assignments = profile.assignment_set.all().order_by('deadline') 
+        assignments = profile.assignment_set.all().order_by('deadline')
         for a in assignments:
             if a.course not in courses:
                 courses.append(a.course)

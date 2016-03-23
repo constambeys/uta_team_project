@@ -73,7 +73,7 @@ class Student(models.Model):
     rated_qualifications = models.ManyToManyField(RatedQualification)
 
     def __unicode__(self):
-        return "Student: " + self.user.username
+        return self.user.first_name + " " + self.user.last_name
 
 
 class Assignment(models.Model):
