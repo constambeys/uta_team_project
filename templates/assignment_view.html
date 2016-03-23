@@ -15,8 +15,11 @@
             {% if user_type == "student" %}
                 <li><a href="{% url 'team_create' assignment.id %}">Create Team</a></li>
                 <li><a href="{% url 'find_team' assignment.id %}" style="margin-right: 40px">Find Team</a></li>
-            {% endif %}
             <li><a href="{% url 'studentprofile' %}">{{ username }}</a></li>
+            {% else %}
+            <li><a href="{% url 'instructorprofile' %}">{{ username }}</a></li>
+            {% endif %}
+
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
     </div><!--/.navbar-collapse -->
