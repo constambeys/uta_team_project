@@ -247,6 +247,8 @@ def assignment_create(request):
     context_dict['req_form'] = req_form
     context_dict['rated_qualif_form'] = rated_qualif_form
     context_dict['datetime_form'] = datetime_form
+    context_dict['username'] = request.user.username
+
 
     # Render the template depending on the context.
     return render(request, 'assignment_create.html', context_dict)
