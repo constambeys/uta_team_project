@@ -83,7 +83,7 @@ def find_team(request, assignment_id):
 
 
 @login_required
-def select_team(request, team_id):
+def select_team(request, team_id, assignment_id):
     if request.user.is_authenticated():
         if hasattr(request.user, 'student'):
             team = Group.objects.get(pk=team_id)
@@ -95,7 +95,7 @@ def select_team(request, team_id):
                 return HttpResponseRedirect(
                     reverse('error',kwargs={'message': "Cannot complete operation. This team is now full!"}))
 
-            return HttpResponseRedirect(reverse('home'))
+            return HttpResponseRedirect(reverse('assignment_view',  kwargs={'assignment_id': assignment_id}))
         else:
             logout(request)  # Clear store session
             return HttpResponseRedirect(reverse('error', kwargs={'message': "Oops something went wrong!!"}))
