@@ -18,8 +18,8 @@ div > img {
 }
 
 .img-background {
-    background-image: url("/static/images/students.png");
+    background: url("/static/images/students.png") no-repeat center top scroll;
     background-position: center;
     background-size: cover;
-    height: 720px;
+    height: 1020px;
 }
