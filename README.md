@@ -14,14 +14,13 @@ username: admin
 password: admin
 
 # Installation
-Detailed installation guide can be found [here](http://www.tangowithdjango.com/book17/chapters/requirements.html#installing-the-software)
+Detailed installation guide for required software can be found [here](http://www.tangowithdjango.com/book17/chapters/requirements.html#installing-the-software)
 
-## Installation Summary
-1. Install Python 2.7.11
-2. Create virtual environment and run `pip install -r requirements.txt`
-3. Clone the repository 
-4. The database is already created and populated with data from the population.py script, so no need to run the migration commands.
-5. Initiate the server by executing `python manage.py runserver`
+## How to run
+1. Create virtual environment and run `pip install -r requirements.txt`
+2. Clone the repository 
+3. The database is already created and populated with data from the population.py script, so no need to run the django database migration commands.
+4. Initiate the web server by executing `python manage.py runserver`
 
 
 
