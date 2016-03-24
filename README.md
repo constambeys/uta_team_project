@@ -21,7 +21,7 @@ Detailed installation guide can be found [here](http://www.tangowithdjango.com/b
 2. Create virtual environment and install the requirements.txt 
 3. Clone the repository 
 4. The database is already created and populated with data from the population.py script, so no need to run the migration commands.
-5. Initiate the server by executing 'python manage.py runserver'
+5. Initiate the server by executing `python manage.py runserver`
 
 
 
