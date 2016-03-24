@@ -7,7 +7,7 @@ Numpy  1.10.4
 
 django-datetime-widget 0.9.3
 
-DB Admin:
+## DB Admin:
 
 username: admin
 
