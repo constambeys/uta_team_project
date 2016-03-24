@@ -1,0 +1,6 @@
+pip install -U django==1.7
+pip install pillow
+pip install django-registration-redux
+pip install django-bootstrap-toolkit
+pip install numpy
+pip install django-datetime-widget
